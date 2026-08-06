@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Motorcycle Survey - Arrowhead Research Ltd</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Supabase JS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&family=Plus+Jakarta+Sans:wght@500;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -24,7 +26,7 @@
         body { background-color: var(--bg); color: var(--text-main); padding: 24px; min-height: 100vh; }
         .container { max-width: 1400px; margin: 0 auto; }
 
-        /* Company & Project Branding Header */
+        /* Header Branding */
         header {
             background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%);
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -85,14 +87,11 @@
         }
         select:focus { border-color: #38bdf8; }
 
-        /* Large Chart Section */
         .chart-card {
             background: var(--card-bg); padding: 28px; border-radius: 20px;
             border: 1px solid var(--card-border); margin-bottom: 28px;
         }
-        .chart-container {
-            position: relative; height: 520px; width: 100%; margin-top: 15px;
-        }
+        .chart-container { position: relative; height: 520px; width: 100%; margin-top: 15px; }
 
         .table-card, .log-card {
             background: var(--card-bg); padding: 28px; border-radius: 20px;
@@ -139,12 +138,11 @@
 <body>
 
 <div class="container">
-    <!-- Header with Company and Project Metadata -->
     <header>
         <div class="header-titles">
             <span class="company-badge">Arrowhead Research Ltd</span>
             <h1>Project: Motorcycle</h1>
-            <p>লাইভ ক্যাটাগরি ট্র্যাকিং, গ্রাফিক্যাল অ্যানালিটিক্স ও ডাটা ম্যানেজমেন্ট প্যানেল</p>
+            <p>লাইভ ডাটাবেজ কানেক্টেড রিয়েল-টাইম সার্ভে ড্যাশবোর্ড</p>
         </div>
         <div class="credits-box">
             <div><strong>Company:</strong> Arrowhead Research Ltd</div>
@@ -154,7 +152,6 @@
         </div>
     </header>
 
-    <!-- User Name Panel & CSV Export -->
     <div class="user-panel">
         <div class="user-input-group">
             <label for="surveyor-name"><strong>সার্ভেয়ার / ডাটা এন্ট্রি অপারেটর:</strong></label>
@@ -163,7 +160,6 @@
         <button class="export-btn" onclick="exportToCSV()">📥 এক্সেল (CSV) রিপোর্ট নামাও</button>
     </div>
 
-    <!-- Live Stat Cards -->
     <div class="stats-grid">
         <div class="stat-card">
             <h3>মোট টার্গেট</h3>
@@ -183,7 +179,6 @@
         </div>
     </div>
 
-    <!-- Category & Brand Filters Only -->
     <div class="controls-card">
         <div class="filter-group">
             <label>📂 Category ফিল্টার</label>
@@ -195,7 +190,6 @@
         </div>
     </div>
 
-    <!-- Extra Large Chart Area -->
     <div class="chart-card">
         <h2>📊 ক্যাটাগরি ও মডেল ভিত্তিক বড় লাইভ গ্রাফ (Live Analytics Chart)</h2>
         <div class="chart-container">
@@ -203,7 +197,6 @@
         </div>
     </div>
 
-    <!-- Main Data Table -->
     <div class="table-card">
         <h2>📋 মডেল ভিত্তিক সার্ভে ডাটা কন্ট্রোল প্যানেল</h2><br>
         <div class="table-wrapper">
@@ -224,7 +217,6 @@
         </div>
     </div>
 
-    <!-- Activity Log -->
     <div class="log-card">
         <h2>📜 লাইভ অ্যাক্টিভিটি হিস্ট্রি Log</h2><br>
         <div class="table-wrapper">
@@ -245,10 +237,14 @@
     </div>
 </div>
 
-<!-- Toast Popup Notification -->
 <div id="toast" class="alert-toast"></div>
 
 <script>
+    // --- Supabase Integration ---
+    const SUPABASE_URL = 'https://drzuozfvpcppextsissg.supabase.co';
+    const SUPABASE_KEY = 'Sb_publishable_4Rnx6U1R2S9X9qTr1xVSQg_9EgYFefd';
+    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
     const rawData = [
         {"category": "MC 125", "brand": "Yamaha", "model": "Saluto", "dhaka_target": 2},
         {"category": "MC 160", "brand": "Yamaha", "model": "FZS Fi V 3.0", "dhaka_target": 4},
@@ -288,14 +284,24 @@
         {"category": "MC 160", "brand": "Bajaj", "model": "Pulsar 150 SD ABS", "dhaka_target": 18}
     ];
 
-    let savedCompleted = JSON.parse(localStorage.getItem('arrowhead_survey_counts')) || {};
-    let activityLogs = JSON.parse(localStorage.getItem('arrowhead_survey_logs')) || [];
-
     let currentData = rawData.map((item, index) => ({
-        ...item, id: index, completed: savedCompleted[index] || 0
+        ...item, id: index, completed: 0
     }));
 
+    let activityLogs = JSON.parse(localStorage.getItem('arrowhead_survey_logs')) || [];
     let chartInstance = null;
+
+    // Load Data Live from Supabase
+    async function syncWithSupabase() {
+        const { data, error } = await _supabase.from('survey_data').select('*');
+        if (data) {
+            data.forEach(row => {
+                const found = currentData.find(d => d.id === row.id);
+                if (found) found.completed = row.completed;
+            });
+            render();
+        }
+    }
 
     function initFilters() {
         const categories = [...new Set(rawData.map(d => d.category))];
@@ -319,63 +325,63 @@
         setTimeout(() => toast.style.display = 'none', 4000);
     }
 
-    function countWork(id) {
+    async function countWork(id) {
         const surveyor = document.getElementById('surveyor-name').value.trim() || 'Shuvo Biswas';
         const item = currentData.find(d => d.id === id);
 
         if (item && item.completed < item.dhaka_target) {
-            item.completed += 1;
-            savedCompleted[id] = item.completed;
-            localStorage.setItem('arrowhead_survey_counts', JSON.stringify(savedCompleted));
+            const updatedCount = item.completed + 1;
+            
+            // Save to Supabase DB
+            const { error } = await _supabase.from('survey_data').upsert({ id: id, completed: updatedCount });
 
-            const logEntry = {
-                time: new Date().toLocaleTimeString('bn-BD', { hour: '2-digit', minute: '2-digit' }),
-                surveyor: surveyor,
-                category: item.category,
-                brand: item.brand,
-                model: item.model,
-                status: 'জমা দেওয়া হয়েছে'
-            };
-            activityLogs.unshift(logEntry);
-            localStorage.setItem('arrowhead_survey_logs', JSON.stringify(activityLogs));
+            if (!error) {
+                item.completed = updatedCount;
+                const logEntry = {
+                    time: new Date().toLocaleTimeString('bn-BD', { hour: '2-digit', minute: '2-digit' }),
+                    surveyor: surveyor,
+                    category: item.category,
+                    brand: item.brand,
+                    model: item.model,
+                    status: 'জমা দেওয়া হয়েছে'
+                };
+                activityLogs.unshift(logEntry);
+                localStorage.setItem('arrowhead_survey_logs', JSON.stringify(activityLogs));
 
-            const categoryItems = currentData.filter(d => d.category === item.category);
-            const catTarget = categoryItems.reduce((acc, d) => acc + d.dhaka_target, 0);
-            const catDone = categoryItems.reduce((acc, d) => acc + d.completed, 0);
-            const catRemaining = Math.max(0, catTarget - catDone);
-
-            showToast(`✅ [${item.model}]-এ ১টি কাজ জমা হয়েছে! "${item.category}" ক্যাটাগরিতে মোট আর ${catRemaining}টি বাকি।`, '#10b981');
-            render();
+                showToast(`✅ [${item.model}]-এ ১টি কাজ লাইভ জমা হয়েছে!`, '#10b981');
+                render();
+            } else {
+                showToast(`❌ ডাটা সেভ হতে সমস্যা হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।`, '#ef4444');
+            }
         }
     }
 
-    function cancelWork(id) {
+    async function cancelWork(id) {
         const surveyor = document.getElementById('surveyor-name').value.trim() || 'Shuvo Biswas';
         const item = currentData.find(d => d.id === id);
 
         if (item && item.completed > 0) {
-            item.completed -= 1;
-            savedCompleted[id] = item.completed;
-            localStorage.setItem('arrowhead_survey_counts', JSON.stringify(savedCompleted));
+            const updatedCount = item.completed - 1;
 
-            const logEntry = {
-                time: new Date().toLocaleTimeString('bn-BD', { hour: '2-digit', minute: '2-digit' }),
-                surveyor: surveyor,
-                category: item.category,
-                brand: item.brand,
-                model: item.model,
-                status: '❌ বাতিল করা হয়েছে'
-            };
-            activityLogs.unshift(logEntry);
-            localStorage.setItem('arrowhead_survey_logs', JSON.stringify(activityLogs));
+            // Update in Supabase DB
+            const { error } = await _supabase.from('survey_data').upsert({ id: id, completed: updatedCount });
 
-            const categoryItems = currentData.filter(d => d.category === item.category);
-            const catTarget = categoryItems.reduce((acc, d) => acc + d.dhaka_target, 0);
-            const catDone = categoryItems.reduce((acc, d) => acc + d.completed, 0);
-            const catRemaining = Math.max(0, catTarget - catDone);
+            if (!error) {
+                item.completed = updatedCount;
+                const logEntry = {
+                    time: new Date().toLocaleTimeString('bn-BD', { hour: '2-digit', minute: '2-digit' }),
+                    surveyor: surveyor,
+                    category: item.category,
+                    brand: item.brand,
+                    model: item.model,
+                    status: '❌ বাতিল করা হয়েছে'
+                };
+                activityLogs.unshift(logEntry);
+                localStorage.setItem('arrowhead_survey_logs', JSON.stringify(activityLogs));
 
-            showToast(`⚠️ [${item.model}] থেকে ১টি জমা বাতিল করা হয়েছে! "${item.category}" ক্যাটাগরিতে বাকি এখন ${catRemaining}টি।`, '#ef4444');
-            render();
+                showToast(`⚠️ [${item.model}] থেকে ১টি জমা বাতিল করা হয়েছে!`, '#ef4444');
+                render();
+            }
         }
     }
 
@@ -472,9 +478,7 @@
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                plugins: {
-                    legend: { labels: { color: '#f8fafc', font: { size: 14 } } }
-                },
+                plugins: { legend: { labels: { color: '#f8fafc', font: { size: 14 } } } },
                 scales: {
                     x: { stacked: true, ticks: { color: '#94a3b8', font: { size: 12 } }, grid: { display: false } },
                     y: { stacked: true, beginAtZero: true, ticks: { color: '#94a3b8' }, grid: { color: '#334155' } }
@@ -485,7 +489,7 @@
 
     function exportToCSV() {
         if(activityLogs.length === 0) {
-            alert('এখনো কোনো কাজ বা কার্যক্রম রেকর্ড হয়নি!');
+            alert('এখনো কোনো কাজ রেকর্ড হয়নি!');
             return;
         }
         let csv = 'Time,Operator,Category,Brand,Model,Status\n';
@@ -508,8 +512,16 @@
         renderChart(filteredData);
     }
 
+    // Real-time listener for multi-device sync
+    _supabase
+        .channel('public:survey_data')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'survey_data' }, payload => {
+            syncWithSupabase();
+        })
+        .subscribe();
+
     initFilters();
-    render();
+    syncWithSupabase();
 </script>
 </body>
 </html>
