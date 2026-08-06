@@ -3,332 +3,343 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dhaka Zone Live Dashboard</title>
+    <title>Motorcycle Survey - Clean 104 Bike Segment</title>
+    <!-- SheetJS Library for Excel Export -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <style>
-        * {
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        body {
-            background-color: #f0f3f6;
-            padding: 20px;
-            margin: 0;
-        }
-        .container {
-            max-width: 1250px;
-            margin: 0 auto;
-            background: #ffffff;
-            padding: 25px;
-            border-radius: 14px;
-            box-shadow: 0 5px 25px rgba(0,0,0,0.08);
-        }
+        * { box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
+        body { background-color: #121212; color: #e0e0e0; padding: 15px; margin: 0; }
+        .container { max-width: 1100px; margin: 0 auto; background: #1e1e1e; padding: 20px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
         
-        /* Header Profile Box */
-        .profile-header {
-            background: linear-gradient(135deg, #1e3c72, #2a5298);
-            color: white;
-            padding: 20px;
+        /* Header Section */
+        .header-box {
+            background: linear-gradient(135deg, #1f1c2c, #928dab);
+            color: #fff;
+            padding: 15px;
             border-radius: 10px;
             margin-bottom: 20px;
         }
-        .profile-header h1 {
-            margin: 0 0 8px 0;
-            font-size: 24px;
-        }
-        .profile-info-grid {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            margin-top: 10px;
-        }
-        .info-card {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 14px;
-        }
-        .info-card strong {
-            color: #ffd700;
-        }
+        .header-box h1 { margin: 0 0 5px 0; font-size: 20px; color: #00d2ff; }
+        .info-grid { display: flex; flex-wrap: wrap; gap: 10px; font-size: 13px; }
+        .info-card { background: rgba(0, 0, 0, 0.3); padding: 6px 12px; border-radius: 6px; }
 
-        /* Project Dynamic Inputs Box */
-        .meta-inputs {
-            background: #eef2f5;
+        /* KPI Performance Counters */
+        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 20px; }
+        .kpi-card { padding: 12px; border-radius: 8px; text-align: center; color: white; }
+        .kpi-target { background: #2980b9; }
+        .kpi-done { background: #27ae60; }
+        .kpi-pending { background: #c0392b; }
+        .kpi-card h3 { margin: 0; font-size: 12px; text-transform: uppercase; opacity: 0.8; }
+        .kpi-card h2 { margin: 5px 0 0 0; font-size: 24px; }
+
+        /* Controls Area */
+        .controls-section {
+            background: #2a2a2a;
             padding: 15px;
-            border-radius: 8px;
+            border-radius: 10px;
             margin-bottom: 20px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
         }
-        .meta-inputs input {
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 14px;
+        .filter-group { flex: 1; min-width: 250px; }
+        .filter-label { display: block; font-size: 13px; font-weight: bold; margin-bottom: 6px; color: #00d2ff; }
+        
+        select.operator-select {
+            width: 100%;
+            padding: 12px 15px;
+            background-color: #2c2c2e;
+            color: #ffffff;
+            border: 1px solid #444;
+            border-radius: 8px;
+            font-size: 15px;
+            outline: none;
+            cursor: pointer;
         }
 
-        /* Filter Controls */
-        .controls-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        .select-box, .search-box {
-            padding: 12px;
-            border: 1px solid #dcdfe6;
+        .search-input {
+            flex: 1;
+            min-width: 200px;
+            padding: 12px 15px;
+            background-color: #2c2c2e;
+            color: #fff;
+            border: 1px solid #444;
             border-radius: 8px;
             font-size: 14px;
             outline: none;
-            width: 100%;
-        }
-        .select-box:focus, .search-box:focus {
-            border-color: #3498db;
         }
 
-        /* Table Area */
-        .table-responsive {
-            overflow-x: auto;
-            max-height: 60vh;
+        /* Dedicated Excel Download Button */
+        .btn-excel {
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            color: #000;
+            border: none;
+            padding: 12px 20px;
             border-radius: 8px;
-            border: 1px solid #e1e1e1;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 13px;
-        }
-        th, td {
-            padding: 10px 12px;
-            text-align: left;
-            border-bottom: 1px solid #eee;
-        }
-        th {
-            background-color: #1e3c72;
-            color: white;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
-        tr:hover {
-            background-color: #f4f8fb;
-        }
-        .center { text-align: center; }
-
-        /* Status Badges */
-        .badge {
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 11px;
+            cursor: pointer;
             font-weight: bold;
+            font-size: 14px;
+            transition: 0.2s;
+            box-shadow: 0 4px 10px rgba(56, 239, 125, 0.2);
         }
-        .pending { background-color: #ffebe9; color: #d9381e; }
-        .done { background-color: #e6f4ea; color: #137333; }
+        .btn-excel:hover { opacity: 0.9; transform: translateY(-1px); }
+
+        /* Table Design */
+        .table-responsive { overflow-x: auto; max-height: 55vh; border: 1px solid #333; border-radius: 8px; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; }
+        th { background-color: #333; color: #00d2ff; padding: 12px; position: sticky; top: 0; z-index: 10; }
+        td { padding: 10px 12px; border-bottom: 1px solid #2a2a2a; }
+        tr:nth-child(even) { background-color: #242424; }
+        tr:hover { background-color: #2c3e50; }
+        
+        .badge { padding: 4px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; text-align: center; display: inline-block; }
+        .badge-pending { background: #4a1515; color: #ff6b6b; }
+        .badge-done { background: #0f381e; color: #51cf66; }
+        .text-center { text-align: center; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <!-- Profile & Header Section -->
-    <div class="profile-header">
-        <h1 id="dispCompany">🏢 [কোম্পানির নাম লিখুন]</h1>
-        <div class="profile-info-grid">
-            <div class="info-card">📌 প্রজেক্ট: <strong id="dispProject">Dhaka Zone Target Progress</strong></div>
-            <div class="info-card">👤 সুপারভাইজার: <strong id="dispSupervisor">Not Assigned</strong></div>
-            <div class="info-card">👨‍💻 অপারেটর: <strong id="dispOperator">Sahariya Islam Shuvo</strong></div>
+    <!-- Header -->
+    <div class="header-box">
+        <h1>🏢 Arrowhead Research Ltd</h1>
+        <div class="info-grid">
+            <div class="info-card">📋 Project: <strong>Motorcycle Survey</strong></div>
+            <div class="info-card">👤 Supervisor: <strong>Tuhin Pradhan</strong></div>
+            <div class="info-card">👨‍💻 Developer: <strong>Sahariya Islam Shuvo</strong></div>
         </div>
     </div>
 
-    <!-- Dynamic Metadata Inputs (কাস্টম নাম বসানোর ঘর) -->
-    <div class="meta-inputs">
-        <input type="text" id="inCompany" placeholder="কোম্পানির নাম টাইপ করুন..." oninput="updateHeader()">
-        <input type="text" id="inProject" placeholder="প্রজেক্টের নাম টাইপ করুন..." oninput="updateHeader()">
-        <input type="text" id="inSupervisor" placeholder="সুপারভাইজারের নাম টাইপ করুন..." oninput="updateHeader()">
-        <input type="text" id="inOperator" placeholder="আপনার/অপারেটরের নাম..." value="Sahariya Islam Shuvo" oninput="updateHeader()">
+    <!-- Live KPI Counters -->
+    <div class="kpi-grid">
+        <div class="kpi-card kpi-target">
+            <h3>Total Target</h3>
+            <h2 id="totalTarget">0</h2>
+        </div>
+        <div class="kpi-card kpi-done">
+            <h3>Completed (হলো)</h3>
+            <h2 id="totalAchieved">0</h2>
+        </div>
+        <div class="kpi-card kpi-pending">
+            <h3>Remaining (বাকি)</h3>
+            <h2 id="totalRemaining">0</h2>
+        </div>
     </div>
 
-    <!-- Filter & Search Controls Section -->
-    <div class="controls-grid">
-        <select id="operatorSelect" class="select-box" onchange="applyFilters()">
-            <option value="All">-- All Operators --</option>
-            <option value="Tamim">Tamim</option>
-            <option value="Abdullah">Abdullah</option>
-            <option value="Shuvo">Shuvo</option>
-            <option value="Namzul">Namzul</option>
-            <option value="Anik">Anik</option>
-            <option value="Nur Hasan">Nur Hasan</option>
-            <option value="Oshim">Oshim</option>
-            <option value="Soumik">Soumik</option>
-            <option value="Parvez">Parvez</option>
-        </select>
+    <!-- Dropdown Filter & Controls -->
+    <div class="controls-section">
+        <div class="filter-group">
+            <label class="filter-label">👤 Select Field Investigator / Operator:</label>
+            <select id="operatorSelect" class="operator-select">
+                <option value="All">-- All Operators --</option>
+                <option value="Tamim">Tamim</option>
+                <option value="Abdullah">Abdullah</option>
+                <option value="Shuvo">Shuvo</option>
+                <option value="Namzul">Namzul</option>
+                <option value="Anik">Anik</option>
+                <option value="Nur Hasan">Nur Hasan</option>
+                <option value="Oshim">Oshim</option>
+                <option value="Soumik">Soumik</option>
+                <option value="Parvez">Parvez</option>
+            </select>
+        </div>
 
-        <input type="text" id="searchInput" class="search-box" onkeyup="applyFilters()" placeholder="মডেল, মেকার বা ক্যাটাগরি সার্চ করুন...">
+        <input type="text" id="searchInput" class="search-input" placeholder="মডেল বা ব্র্যান্ড সার্চ করুন..." onkeyup="filterData()">
+        
+        <!-- Click Button for Excel Export -->
+        <button class="btn-excel" onclick="exportToExcel()">📥 Download Excel (.xlsx)</button>
     </div>
 
-    <!-- Data Table -->
+    <!-- 104 Motorcycle Segment Data Table (No Operator Column) -->
     <div class="table-responsive">
         <table>
             <thead>
                 <tr>
-                    <th class="center">SL</th>
-                    <th>Operator</th>
+                    <th class="text-center">SL</th>
                     <th>CC Category</th>
-                    <th>Maker</th>
-                    <th>Model</th>
-                    <th class="center">Dhaka Target</th>
-                    <th class="center">Achieved</th>
-                    <th class="center">Remaining (কয়টা লাগবে)</th>
+                    <th>Maker (Brand)</th>
+                    <th>Model Name</th>
+                    <th class="text-center">Target</th>
+                    <th class="text-center">Achieved</th>
+                    <th class="text-center">Remaining</th>
+                    <th class="text-center">Status</th>
                 </tr>
             </thead>
             <tbody id="tableBody">
-                <!-- Rows Injected via JS -->
+                <!-- JS Data Injection -->
             </tbody>
         </table>
     </div>
 </div>
 
 <script>
-// Complete Dataset containing ALL 104 Models from Picture
-const masterDataset = [
-    {operator: "Tamim", category: "EV", maker: "EV", model: "Revoo EV", target: 9, achieved: 0},
-    {operator: "Abdullah", category: "EV", maker: "EV", model: "Runner EV", target: 6, achieved: 0},
-    {operator: "Shuvo", category: "MC 100", maker: "Bajaj", model: "Discover 110 Disc New", target: 3, achieved: 1},
-    {operator: "Namzul", category: "MC 100", maker: "Bajaj", model: "Platina ES", target: 0, achieved: 7},
-    {operator: "Anik", category: "MC 120", maker: "Bajaj", model: "Discover 125 Disc New", target: 15, achieved: 4},
-    {operator: "Nur Hasan", category: "MC 125", maker: "Bajaj", model: "Pulsar NS 125", target: 2, achieved: 0},
-    {operator: "Oshim", category: "MC 160", maker: "Bajaj", model: "Pulsar 150 SD", target: 6, achieved: 10},
-    {operator: "Soumik", category: "MC 160", maker: "Bajaj", model: "Pulsar 150 SD ABS", target: 18, achieved: 4},
-    {operator: "Parvez", category: "MC 160", maker: "Bajaj", model: "Pulsar 150 TD ABS", target: 2, achieved: 0},
-    {operator: "Tamim", category: "MC 160", maker: "Bajaj", model: "Pulsar N 160 FI ABS (DC)", target: 2, achieved: 1},
-    {operator: "Shuvo", category: "MC 160", maker: "Bajaj", model: "Pulsar N 160 USD", target: 1, achieved: 0},
-    {operator: "Anik", category: "MC 160", maker: "Bajaj", model: "Pulsar NS 160 TD ABS", target: 1, achieved: 0},
-    {operator: "Soumik", category: "MC 161+", maker: "CF Moto", model: "CF Moto", target: 4, achieved: 0},
-    {operator: "Tamim", category: "ATSC", maker: "Hero", model: "Maestro", target: 2, achieved: 1},
-    {operator: "Abdullah", category: "ATSC", maker: "Hero", model: "Pleasure", target: 4, achieved: 0},
-    {operator: "Shuvo", category: "ATSC", maker: "Hero", model: "Xoom", target: 2, achieved: 0},
-    {operator: "Namzul", category: "ATSC", maker: "Hero", model: "Xoom 125", target: 6, achieved: 0},
-    {operator: "Nur Hasan", category: "MC 100", maker: "Hero", model: "HF Deluxe", target: 7, achieved: 0},
-    {operator: "Parvez", category: "MC 100", maker: "Hero", model: "Passion Pro", target: 2, achieved: 1},
-    {operator: "Oshim", category: "MC 100", maker: "Hero", model: "Passion Pro Disc", target: 0, achieved: 0},
-    {operator: "Soumik", category: "MC 100", maker: "Hero", model: "Passion XPro XTec", target: 0, achieved: 0},
-    {operator: "Tamim", category: "MC 100", maker: "Hero", model: "Splender XTec", target: 2, achieved: 0},
-    {operator: "Abdullah", category: "MC 100", maker: "Hero", model: "Splendor Pro/Plus", target: 3, achieved: 1},
-    {operator: "Shuvo", category: "MC 100", maker: "Hero", model: "Splendor+ Sports Disc", target: 3, achieved: 0},
-    {operator: "Namzul", category: "MC 100", maker: "Hero", model: "Splendor+ Sports Drum", target: 0, achieved: 1},
-    {operator: "Anik", category: "MC 125", maker: "Hero", model: "Glamour", target: 5, achieved: 0},
-    {operator: "Nur Hasan", category: "MC 125", maker: "Hero", model: "Glamour X", target: 2, achieved: 0},
-    {operator: "Oshim", category: "MC 125", maker: "Hero", model: "IGNITOR XTEC", target: 0, achieved: 0},
-    {operator: "Soumik", category: "MC 125", maker: "Hero", model: "XTREME 125R", target: 10, achieved: 4},
-    {operator: "Parvez", category: "MC 160", maker: "Hero", model: "Hunk New DD ABS'21", target: 2, achieved: 1},
-    {operator: "Tamim", category: "MC 161+", maker: "Hero", model: "XTREME 160R 4V", target: 4, achieved: 0},
-    {operator: "Abdullah", category: "ATSC", maker: "Honda", model: "DIO", target: 2, achieved: 0},
-    {operator: "Shuvo", category: "MC 100", maker: "Honda", model: "Dream 110", target: 9, achieved: 1},
-    {operator: "Namzul", category: "MC 100", maker: "Honda", model: "Livo Disc", target: 5, achieved: 2},
-    {operator: "Anik", category: "MC 100", maker: "Honda", model: "Shine 100", target: 2, achieved: 0},
-    {operator: "Nur Hasan", category: "MC 125", maker: "Honda", model: "SP 125", target: 12, achieved: 2},
-    {operator: "Oshim", category: "MC 160", maker: "Honda", model: "SP160 ABS", target: 2, achieved: 0},
-    {operator: "Soumik", category: "MC 160", maker: "Honda", model: "SP160 STD", target: 3, achieved: 0},
-    {operator: "Parvez", category: "MC 160", maker: "Honda", model: "Xblade FI ABS", target: 25, achieved: 1},
-    {operator: "Tamim", category: "MC 161+", maker: "Honda", model: "Hornet 2.0", target: 10, achieved: 2},
-    {operator: "Abdullah", category: "MC 161+", maker: "Honda", model: "NX200", target: 10, achieved: 3},
-    {operator: "Shuvo", category: "MC 161+", maker: "Royal Enfield", model: "Bullet 350", target: 1, achieved: 0},
-    {operator: "Namzul", category: "MC 161+", maker: "Royal Enfield", model: "Classic 350", target: 23, achieved: 3},
-    {operator: "Anik", category: "MC 161+", maker: "Royal Enfield", model: "Hunter 350", target: 2, achieved: 0},
-    {operator: "Nur Hasan", category: "MC 161+", maker: "Royal Enfield", model: "Meteor 350", target: 2, achieved: 0},
-    {operator: "Oshim", category: "ATSC", maker: "Runner", model: "Skooty 110", target: 1, achieved: 0},
-    {operator: "Soumik", category: "ATSC", maker: "Runner", model: "Skooty 125", target: 2, achieved: 0},
-    {operator: "Parvez", category: "MC 100", maker: "Runner", model: "Galaxy/Royal+", target: 0, achieved: 0},
-    {operator: "Tamim", category: "ATSC", maker: "Suzuki", model: "Access", target: 3, achieved: 1},
-    {operator: "Abdullah", category: "MC 100", maker: "Suzuki", model: "Hayate EP", target: 2, achieved: 0},
-    {operator: "Shuvo", category: "MC 125", maker: "Suzuki", model: "GSX 125", target: 3, achieved: 0},
-    {operator: "Namzul", category: "MC 160", maker: "Suzuki", model: "Gixxer DD", target: 11, achieved: 0},
-    {operator: "Anik", category: "MC 160", maker: "Suzuki", model: "Gixxer SD", target: 24, achieved: 4},
-    {operator: "Nur Hasan", category: "MC 160", maker: "Suzuki", model: "Gixxer'21 DD Non ABS", target: 18, achieved: 0},
-    {operator: "Oshim", category: "MC 160", maker: "Suzuki", model: "Gixxer'21 FI & ABS", target: 15, achieved: 2},
-    {operator: "Soumik", category: "MC 160", maker: "Suzuki", model: "Gixxer'21 SF FI & ABS", target: 11, achieved: 1},
-    {operator: "Parvez", category: "MC 161+", maker: "Suzuki", model: "Gixxer 250", target: 1, achieved: 0},
-    {operator: "Tamim", category: "MC 161+", maker: "Suzuki", model: "Gixxer SF 250", target: 2, achieved: 0},
-    {operator: "Abdullah", category: "ATSC", maker: "TVS", model: "Ntorq", target: 1, achieved: 1},
-    {operator: "Shuvo", category: "MC 100", maker: "TVS", model: "Metro ES", target: 0, achieved: 0},
-    {operator: "Namzul", category: "MC 125", maker: "TVS", model: "Max", target: 0, achieved: 0},
-    {operator: "Anik", category: "MC 125", maker: "TVS", model: "Raider", target: 2, achieved: 0},
-    {operator: "Nur Hasan", category: "MC 160", maker: "TVS", model: "RTR 160 DD", target: 2, achieved: 0},
-    {operator: "Oshim", category: "MC 160", maker: "TVS", model: "RTR 4V (DD)", target: 2, achieved: 0},
-    {operator: "Soumik", category: "MC 160", maker: "TVS", model: "RTR 4V (SD)", target: 2, achieved: 0},
-    {operator: "Parvez", category: "MC 160", maker: "TVS", model: "RTR 4V ABS", target: 2, achieved: 1},
-    {operator: "Tamim", category: "ATSC", maker: "Yamaha", model: "AEROX 155cc", target: 3, achieved: 0},
-    {operator: "Abdullah", category: "ATSC", maker: "Yamaha", model: "Ray ZR", target: 1, achieved: 0},
-    {operator: "Shuvo", category: "ATSC", maker: "Yamaha", model: "Ray ZR 125", target: 1, achieved: 0},
-    {operator: "Namzul", category: "MC 125", maker: "Yamaha", model: "Saluto", target: 2, achieved: 2},
-    {operator: "Anik", category: "MC 160", maker: "Yamaha", model: "Fazer", target: 4, achieved: 2},
-    {operator: "Nur Hasan", category: "MC 160", maker: "Yamaha", model: "FZS FI Hybrid", target: 2, achieved: 0},
-    {operator: "Oshim", category: "MC 160", maker: "Yamaha", model: "FZS FI V 2.0", target: 44, achieved: 12},
-    {operator: "Soumik", category: "MC 160", maker: "Yamaha", model: "FZS FI V 3.0", target: 4, achieved: 7},
-    {operator: "Shuvo", category: "MC 160", maker: "Yamaha", model: "FZS FI V 4.0", target: 25, achieved: 3},
-    {operator: "Parvez", category: "MC 160", maker: "Yamaha", model: "FZ-X", target: 4, achieved: 0},
-    {operator: "Tamim", category: "MC 160", maker: "Yamaha", model: "MT-15", target: 2, achieved: 0},
-    {operator: "Abdullah", category: "MC 160", maker: "Yamaha", model: "MT-15 V2", target: 2, achieved: 0},
-    {operator: "Shuvo", category: "MC 160", maker: "Yamaha", model: "R-15", target: 2, achieved: 0},
-    {operator: "Namzul", category: "MC 160", maker: "Yamaha", model: "R-15 M", target: 1, achieved: 1},
-    {operator: "Anik", category: "MC 160", maker: "Yamaha", model: "R-15 V4", target: 2, achieved: 1}
+// Pure 104 Bike Segment Dataset (No Operator in dataset)
+const surveyDataset = [
+    {category: "EV", maker: "EV", model: "Revoo EV", target: 9, achieved: 0},
+    {category: "EV", maker: "EV", model: "Runner EV", target: 6, achieved: 0},
+    {category: "MC 100", maker: "Bajaj", model: "Discover 110 Disc New", target: 3, achieved: 1},
+    {category: "MC 100", maker: "Bajaj", model: "Platina ES", target: 0, achieved: 7},
+    {category: "MC 120", maker: "Bajaj", model: "Discover 125 Disc New", target: 15, achieved: 4},
+    {category: "MC 125", maker: "Bajaj", model: "Pulsar NS 125", target: 2, achieved: 0},
+    {category: "MC 160", maker: "Bajaj", model: "Pulsar 150 SD", target: 6, achieved: 10},
+    {category: "MC 160", maker: "Bajaj", model: "Pulsar 150 SD ABS", target: 18, achieved: 4},
+    {category: "MC 160", maker: "Bajaj", model: "Pulsar 150 TD ABS", target: 2, achieved: 0},
+    {category: "MC 160", maker: "Bajaj", model: "Pulsar N 160 FI ABS (DC)", target: 2, achieved: 1},
+    {category: "MC 160", maker: "Bajaj", model: "Pulsar N 160 USD", target: 1, achieved: 0},
+    {category: "MC 160", maker: "Bajaj", model: "Pulsar NS 160 TD ABS", target: 1, achieved: 0},
+    {category: "MC 161+", maker: "CF Moto", model: "CF Moto", target: 4, achieved: 0},
+    {category: "ATSC", maker: "Hero", model: "Maestro", target: 2, achieved: 1},
+    {category: "ATSC", maker: "Hero", model: "Pleasure", target: 4, achieved: 0},
+    {category: "ATSC", maker: "Hero", model: "Xoom", target: 2, achieved: 0},
+    {category: "ATSC", maker: "Hero", model: "Xoom 125", target: 6, achieved: 0},
+    {category: "MC 100", maker: "Hero", model: "HF Deluxe", target: 7, achieved: 0},
+    {category: "MC 100", maker: "Hero", model: "Passion Pro", target: 2, achieved: 1},
+    {category: "MC 100", maker: "Hero", model: "Passion Pro Disc", target: 0, achieved: 0},
+    {category: "MC 100", maker: "Hero", model: "Passion XPro XTec", target: 0, achieved: 0},
+    {category: "MC 100", maker: "Hero", model: "Splender XTec", target: 2, achieved: 0},
+    {category: "MC 100", maker: "Hero", model: "Splendor Pro/Plus", target: 3, achieved: 1},
+    {category: "MC 100", maker: "Hero", model: "Splendor+ Sports Disc", target: 3, achieved: 0},
+    {category: "MC 100", maker: "Hero", model: "Splendor+ Sports Drum", target: 0, achieved: 1},
+    {category: "MC 125", maker: "Hero", model: "Glamour", target: 5, achieved: 0},
+    {category: "MC 125", maker: "Hero", model: "Glamour X", target: 2, achieved: 0},
+    {category: "MC 125", maker: "Hero", model: "IGNITOR XTEC", target: 0, achieved: 0},
+    {category: "MC 125", maker: "Hero", model: "XTREME 125R", target: 10, achieved: 4},
+    {category: "MC 160", maker: "Hero", model: "Hunk New DD ABS'21", target: 2, achieved: 1},
+    {category: "MC 161+", maker: "Hero", model: "XTREME 160R 4V", target: 4, achieved: 0},
+    {category: "ATSC", maker: "Honda", model: "DIO", target: 2, achieved: 0},
+    {category: "MC 100", maker: "Honda", model: "Dream 110", target: 9, achieved: 1},
+    {category: "MC 100", maker: "Honda", model: "Livo Disc", target: 5, achieved: 2},
+    {category: "MC 100", maker: "Honda", model: "Shine 100", target: 2, achieved: 0},
+    {category: "MC 125", maker: "Honda", model: "SP 125", target: 12, achieved: 2},
+    {category: "MC 160", maker: "Honda", model: "SP160 ABS", target: 2, achieved: 0},
+    {category: "MC 160", maker: "Honda", model: "SP160 STD", target: 3, achieved: 0},
+    {category: "MC 160", maker: "Honda", model: "Xblade FI ABS", target: 25, achieved: 1},
+    {category: "MC 161+", maker: "Honda", model: "Hornet 2.0", target: 10, achieved: 2},
+    {category: "MC 161+", maker: "Honda", model: "NX200", target: 10, achieved: 3},
+    {category: "MC 161+", maker: "Royal Enfield", model: "Bullet 350", target: 1, achieved: 0},
+    {category: "MC 161+", maker: "Royal Enfield", model: "Classic 350", target: 23, achieved: 3},
+    {category: "MC 161+", maker: "Royal Enfield", model: "Hunter 350", target: 2, achieved: 0},
+    {category: "MC 161+", maker: "Royal Enfield", model: "Meteor 350", target: 2, achieved: 0},
+    {category: "ATSC", maker: "Runner", model: "Skooty 110", target: 1, achieved: 0},
+    {category: "ATSC", maker: "Runner", model: "Skooty 125", target: 2, achieved: 0},
+    {category: "MC 100", maker: "Runner", model: "Galaxy/Royal+", target: 0, achieved: 0},
+    {category: "ATSC", maker: "Suzuki", model: "Access", target: 3, achieved: 1},
+    {category: "MC 100", maker: "Suzuki", model: "Hayate EP", target: 2, achieved: 0},
+    {category: "MC 125", maker: "Suzuki", model: "GSX 125", target: 3, achieved: 0},
+    {category: "MC 160", maker: "Suzuki", model: "Gixxer DD", target: 11, achieved: 0},
+    {category: "MC 160", maker: "Suzuki", model: "Gixxer SD", target: 24, achieved: 4},
+    {category: "MC 160", maker: "Suzuki", model: "Gixxer'21 DD Non ABS", target: 18, achieved: 0},
+    {category: "MC 160", maker: "Suzuki", model: "Gixxer'21 FI & ABS", target: 15, achieved: 2},
+    {category: "MC 160", maker: "Suzuki", model: "Gixxer'21 SF FI & ABS", target: 11, achieved: 1},
+    {category: "MC 161+", maker: "Suzuki", model: "Gixxer 250", target: 1, achieved: 0},
+    {category: "MC 161+", maker: "Suzuki", model: "Gixxer SF 250", target: 2, achieved: 0},
+    {category: "ATSC", maker: "TVS", model: "Ntorq", target: 1, achieved: 1},
+    {category: "MC 100", maker: "TVS", model: "Metro ES", target: 0, achieved: 0},
+    {category: "MC 125", maker: "TVS", model: "Max", target: 0, achieved: 0},
+    {category: "MC 125", maker: "TVS", model: "Raider", target: 2, achieved: 0},
+    {category: "MC 160", maker: "TVS", model: "RTR 160 DD", target: 2, achieved: 0},
+    {category: "MC 160", maker: "TVS", model: "RTR 4V (DD)", target: 2, achieved: 0},
+    {category: "MC 160", maker: "TVS", model: "RTR 4V (SD)", target: 2, achieved: 0},
+    {category: "MC 160", maker: "TVS", model: "RTR 4V ABS", target: 2, achieved: 1},
+    {category: "ATSC", maker: "Yamaha", model: "AEROX 155cc", target: 3, achieved: 0},
+    {category: "ATSC", maker: "Yamaha", model: "Ray ZR", target: 1, achieved: 0},
+    {category: "ATSC", maker: "Yamaha", model: "Ray ZR 125", target: 1, achieved: 0},
+    {category: "MC 125", maker: "Yamaha", model: "Saluto", target: 2, achieved: 2},
+    {category: "MC 160", maker: "Yamaha", model: "Fazer", target: 4, achieved: 2},
+    {category: "MC 160", maker: "Yamaha", model: "FZS FI Hybrid", target: 2, achieved: 0},
+    {category: "MC 160", maker: "Yamaha", model: "FZS FI V 2.0", target: 44, achieved: 12},
+    {category: "MC 160", maker: "Yamaha", model: "FZS FI V 3.0", target: 4, achieved: 7},
+    {category: "MC 160", maker: "Yamaha", model: "FZS FI V 4.0", target: 25, achieved: 3},
+    {category: "MC 160", maker: "Yamaha", model: "FZ-X", target: 4, achieved: 0},
+    {category: "MC 160", maker: "Yamaha", model: "MT-15", target: 2, achieved: 0},
+    {category: "MC 160", maker: "Yamaha", model: "MT-15 V2", target: 2, achieved: 0},
+    {category: "MC 160", maker: "Yamaha", model: "R-15", target: 2, achieved: 0},
+    {category: "MC 160", maker: "Yamaha", model: "R-15 M", target: 1, achieved: 1},
+    {category: "MC 160", maker: "Yamaha", model: "R-15 V4", target: 2, achieved: 1}
 ];
 
-function updateHeader() {
-    const comp = document.getElementById('inCompany').value;
-    const proj = document.getElementById('inProject').value;
-    const sup = document.getElementById('inSupervisor').value;
-    const op = document.getElementById('inOperator').value;
+let activeData = [...surveyDataset];
 
-    document.getElementById('dispCompany').innerText = comp ? '🏢 ' + comp : '🏢 [কোম্পানির নাম লিখুন]';
-    document.getElementById('dispProject').innerText = proj ? proj : 'Dhaka Zone Target Progress';
-    document.getElementById('dispSupervisor').innerText = sup ? sup : 'Not Assigned';
-    document.getElementById('dispOperator').innerText = op ? op : 'Sahariya Islam Shuvo';
-}
-
-function updateTable(dataArray) {
+function renderDashboard(data) {
     const tbody = document.getElementById('tableBody');
     tbody.innerHTML = '';
 
-    dataArray.forEach((item, index) => {
-        const remaining = (item.target || 0) - (item.achieved || 0);
-        let statusBadge = remaining > 0 
-            ? `<span class="badge pending">বাকি ${remaining} টি</span>` 
-            : `<span class="badge done">Done</span>`;
+    let tTarget = 0, tAchieved = 0, tRemaining = 0;
 
-        const row = `
+    data.forEach((item, index) => {
+        const rem = item.target - item.achieved;
+        const actualRem = rem > 0 ? rem : 0;
+
+        tTarget += item.target;
+        tAchieved += item.achieved;
+        tRemaining += actualRem;
+
+        let badge = rem <= 0 
+            ? `<span class="badge badge-done">Completed</span>`
+            : `<span class="badge badge-pending">বাকি ${rem} টি</span>`;
+
+        tbody.innerHTML += `
             <tr>
-                <td class="center">${index + 1}</td>
-                <td><strong>${item.operator || '-'}</strong></td>
-                <td>${item.category || '-'}</td>
-                <td>${item.maker || '-'}</td>
-                <td><strong>${item.model || '-'}</strong></td>
-                <td class="center">${item.target || 0}</td>
-                <td class="center">${item.achieved || 0}</td>
-                <td class="center">${statusBadge}</td>
+                <td class="text-center">${index + 1}</td>
+                <td>${item.category}</td>
+                <td>${item.maker}</td>
+                <td><strong>${item.model}</strong></td>
+                <td class="text-center">${item.target}</td>
+                <td class="text-center" style="color: #2ecc71; font-weight: bold;">${item.achieved}</td>
+                <td class="text-center" style="color: #e74c3c; font-weight: bold;">${actualRem}</td>
+                <td class="text-center">${badge}</td>
             </tr>
         `;
-        tbody.innerHTML += row;
     });
+
+    // Update Counters
+    document.getElementById('totalTarget').innerText = tTarget;
+    document.getElementById('totalAchieved').innerText = tAchieved;
+    document.getElementById('totalRemaining').innerText = tRemaining;
 }
 
-function applyFilters() {
-    const selectedOp = document.getElementById('operatorSelect').value.toUpperCase();
+function filterData() {
     const searchVal = document.getElementById('searchInput').value.toUpperCase();
 
-    const filtered = masterDataset.filter(item => {
-        const matchOp = (selectedOp === 'ALL') || (item.operator && item.operator.toUpperCase() === selectedOp);
-        const matchSearch = (item.model && item.model.toUpperCase().includes(searchVal)) ||
-                            (item.maker && item.maker.toUpperCase().includes(searchVal)) ||
-                            (item.category && item.category.toUpperCase().includes(searchVal));
-        return matchOp && matchSearch;
+    activeData = surveyDataset.filter(item => {
+        return item.model.toUpperCase().includes(searchVal) || 
+               item.maker.toUpperCase().includes(searchVal) ||
+               item.category.toUpperCase().includes(searchVal);
     });
 
-    updateTable(filtered);
+    renderDashboard(activeData);
+}
+
+// Function to Download Excel Sheet
+function exportToExcel() {
+    const selectedOp = document.getElementById('operatorSelect').value;
+    const fileName = selectedOp === 'All' 
+        ? 'Motorcycle_Survey_104_Segment_Report.xlsx' 
+        : `Motorcycle_Survey_${selectedOp}_Report.xlsx`;
+
+    const excelRows = activeData.map((item, idx) => ({
+        "SL": idx + 1,
+        "Operator Selected": selectedOp,
+        "CC Category": item.category,
+        "Maker": item.maker,
+        "Model Name": item.model,
+        "Target": item.target,
+        "Achieved": item.achieved,
+        "Remaining": item.target - item.achieved > 0 ? item.target - item.achieved : 0,
+        "Status": (item.target - item.achieved) <= 0 ? "Completed" : "Pending"
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(excelRows);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Survey Data");
+
+    XLSX.writeFile(workbook, fileName);
 }
 
 // Initial Load
-updateTable(masterDataset);
+renderDashboard(surveyDataset);
 </script>
 
 </body>
