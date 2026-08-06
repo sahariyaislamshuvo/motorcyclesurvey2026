@@ -323,7 +323,6 @@
             savedCompleted[id] = item.completed;
             localStorage.setItem('dhaka_survey_counts', JSON.stringify(savedCompleted));
 
-            // Log activity
             const logEntry = {
                 time: new Date().toLocaleTimeString('bn-BD', { hour: '2-digit', minute: '2-digit' }),
                 surveyor: surveyor,
@@ -334,7 +333,6 @@
             activityLogs.unshift(logEntry);
             localStorage.setItem('dhaka_survey_logs', JSON.stringify(activityLogs));
 
-            // Calculate category level remaining
             const categoryItems = currentData.filter(d => d.category === item.category);
             const catTarget = categoryItems.reduce((acc, d) => acc + d.dhaka_target, 0);
             const catDone = categoryItems.reduce((acc, d) => acc + d.completed, 0);
