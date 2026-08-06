@@ -3,10 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dhaka Zone Live Analytics Dashboard</title>
-    <!-- Chart.js and XLSX Libraries -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <title>Dhaka Zone Live Dashboard</title>
     <style>
         * {
             box-sizing: border-box;
@@ -26,63 +23,57 @@
             box-shadow: 0 5px 25px rgba(0,0,0,0.08);
         }
         
-        /* Company & Header Profile Box */
+        /* Header Profile Box */
         .profile-header {
             background: linear-gradient(135deg, #1e3c72, #2a5298);
             color: white;
             padding: 20px;
             border-radius: 10px;
-            margin-bottom: 25px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
+            margin-bottom: 20px;
         }
         .profile-header h1 {
-            margin: 0 0 5px 0;
-            font-size: 22px;
-            letter-spacing: 0.5px;
+            margin: 0 0 8px 0;
+            font-size: 24px;
         }
-        .profile-info {
+        .profile-info-grid {
             display: flex;
-            gap: 20px;
+            gap: 15px;
             flex-wrap: wrap;
+            margin-top: 10px;
         }
         .info-card {
-            background: rgba(255, 255, 255, 0.15);
-            padding: 8px 15px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 12px;
             border-radius: 6px;
             font-size: 14px;
-            backdrop-filter: blur(5px);
         }
         .info-card strong {
             color: #ffd700;
         }
 
-        /* Controls Grid */
+        /* Project Dynamic Inputs Box */
+        .meta-inputs {
+            background: #eef2f5;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+        .meta-inputs input {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        /* Filter Controls */
         .controls-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 15px;
-            margin-bottom: 25px;
-        }
-        .file-upload-btn {
-            position: relative;
-            background: #eef2f5;
-            padding: 10px 15px;
-            border: 2px dashed #3498db;
-            border-radius: 8px;
-            text-align: center;
-            cursor: pointer;
-            font-weight: 600;
-            color: #2c3e50;
-        }
-        .file-upload-btn input[type="file"] {
-            position: absolute;
-            left: 0; top: 0; opacity: 0;
-            width: 100%; height: 100%;
-            cursor: pointer;
+            margin-bottom: 20px;
         }
         .select-box, .search-box {
             padding: 12px;
@@ -96,21 +87,10 @@
             border-color: #3498db;
         }
 
-        /* Chart Area */
-        .chart-container {
-            position: relative;
-            height: 320px;
-            margin-bottom: 30px;
-            background: #fafafa;
-            padding: 15px;
-            border-radius: 10px;
-            border: 1px solid #eaeaea;
-        }
-
         /* Table Area */
         .table-responsive {
             overflow-x: auto;
-            max-height: 55vh;
+            max-height: 60vh;
             border-radius: 8px;
             border: 1px solid #e1e1e1;
         }
@@ -152,23 +132,24 @@
 <div class="container">
     <!-- Profile & Header Section -->
     <div class="profile-header">
-        <div>
-            <h1>🏢 <span id="dispCompany">Dhaka Zone Operations</span></h1>
-            <small>Target & Achievement Live Tracking Dashboard</small>
-        </div>
-        <div class="profile-info">
-            <div class="info-card">👤 Supervisor: <strong id="dispSupervisor">Not Assigned</strong></div>
-            <div class="info-card">👨‍💻 Operator: <strong id="dispOperator">Sahariya Islam Shuvo</strong></div>
+        <h1 id="dispCompany">🏢 [কোম্পানির নাম লিখুন]</h1>
+        <div class="profile-info-grid">
+            <div class="info-card">📌 প্রজেক্ট: <strong id="dispProject">Dhaka Zone Target Progress</strong></div>
+            <div class="info-card">👤 সুপারভাইজার: <strong id="dispSupervisor">Not Assigned</strong></div>
+            <div class="info-card">👨‍💻 অপারেটর: <strong id="dispOperator">Sahariya Islam Shuvo</strong></div>
         </div>
     </div>
 
-    <!-- Controls Section -->
-    <div class="controls-grid">
-        <div class="file-upload-btn">
-            <span id="fileName">📁 Upload Excel / CSV</span>
-            <input type="file" id="excelFile" accept=".xlsx, .xls, .csv" onchange="handleExcelUpload(event)">
-        </div>
+    <!-- Dynamic Metadata Inputs (কাস্টম নাম বসানোর ঘর) -->
+    <div class="meta-inputs">
+        <input type="text" id="inCompany" placeholder="কোম্পানির নাম টাইপ করুন..." oninput="updateHeader()">
+        <input type="text" id="inProject" placeholder="প্রজেক্টের নাম টাইপ করুন..." oninput="updateHeader()">
+        <input type="text" id="inSupervisor" placeholder="সুপারভাইজারের নাম টাইপ করুন..." oninput="updateHeader()">
+        <input type="text" id="inOperator" placeholder="আপনার/অপারেটরের নাম..." value="Sahariya Islam Shuvo" oninput="updateHeader()">
+    </div>
 
+    <!-- Filter & Search Controls Section -->
+    <div class="controls-grid">
         <select id="operatorSelect" class="select-box" onchange="applyFilters()">
             <option value="All">-- All Operators --</option>
             <option value="Tamim">Tamim</option>
@@ -183,11 +164,6 @@
         </select>
 
         <input type="text" id="searchInput" class="search-box" onkeyup="applyFilters()" placeholder="মডেল, মেকার বা ক্যাটাগরি সার্চ করুন...">
-    </div>
-
-    <!-- Dynamic Chart -->
-    <div class="chart-container">
-        <canvas id="analyticsChart"></canvas>
     </div>
 
     <!-- Data Table -->
@@ -206,7 +182,7 @@
                 </tr>
             </thead>
             <tbody id="tableBody">
-                <!-- Rows Injected Here -->
+                <!-- Rows Injected via JS -->
             </tbody>
         </table>
     </div>
@@ -214,7 +190,7 @@
 
 <script>
 // Complete Dataset containing ALL 104 Models from Picture
-let masterDataset = [
+const masterDataset = [
     {operator: "Tamim", category: "EV", maker: "EV", model: "Revoo EV", target: 9, achieved: 0},
     {operator: "Abdullah", category: "EV", maker: "EV", model: "Runner EV", target: 6, achieved: 0},
     {operator: "Shuvo", category: "MC 100", maker: "Bajaj", model: "Discover 110 Disc New", target: 3, achieved: 1},
@@ -298,11 +274,16 @@ let masterDataset = [
     {operator: "Anik", category: "MC 160", maker: "Yamaha", model: "R-15 V4", target: 2, achieved: 1}
 ];
 
-let chartInstance = null;
+function updateHeader() {
+    const comp = document.getElementById('inCompany').value;
+    const proj = document.getElementById('inProject').value;
+    const sup = document.getElementById('inSupervisor').value;
+    const op = document.getElementById('inOperator').value;
 
-function renderDashboard(data) {
-    updateTable(data);
-    updateChart(data);
+    document.getElementById('dispCompany').innerText = comp ? '🏢 ' + comp : '🏢 [কোম্পানির নাম লিখুন]';
+    document.getElementById('dispProject').innerText = proj ? proj : 'Dhaka Zone Target Progress';
+    document.getElementById('dispSupervisor').innerText = sup ? sup : 'Not Assigned';
+    document.getElementById('dispOperator').innerText = op ? op : 'Sahariya Islam Shuvo';
 }
 
 function updateTable(dataArray) {
@@ -331,42 +312,6 @@ function updateTable(dataArray) {
     });
 }
 
-function updateChart(dataArray) {
-    const ctx = document.getElementById('analyticsChart').getContext('2d');
-    
-    const brandMap = {};
-    dataArray.forEach(row => {
-        const brand = row.maker || 'Other';
-        if(!brandMap[brand]) brandMap[brand] = { target: 0, achieved: 0 };
-        brandMap[brand].target += Number(row.target || 0);
-        brandMap[brand].achieved += Number(row.achieved || 0);
-    });
-
-    const labels = Object.keys(brandMap);
-    const targetData = labels.map(k => brandMap[k].target);
-    const achievedData = labels.map(k => brandMap[k].achieved);
-
-    if (chartInstance) chartInstance.destroy();
-
-    chartInstance = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: labels,
-            datasets: [
-                { label: 'Dhaka Target', data: targetData, backgroundColor: '#1e3c72' },
-                { label: 'Achieved', data: achievedData, backgroundColor: '#2ecc71' }
-            ]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                title: { display: true, text: 'Maker-wise Performance Analytics' }
-            }
-        }
-    });
-}
-
 function applyFilters() {
     const selectedOp = document.getElementById('operatorSelect').value.toUpperCase();
     const searchVal = document.getElementById('searchInput').value.toUpperCase();
@@ -379,38 +324,11 @@ function applyFilters() {
         return matchOp && matchSearch;
     });
 
-    renderDashboard(filtered);
+    updateTable(filtered);
 }
 
-function handleExcelUpload(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    document.getElementById('fileName').innerText = `📄 ${file.name}`;
-
-    const reader = new FileReader();
-    reader.onload = function(evt) {
-        const buffer = evt.target.result;
-        const wb = XLSX.read(buffer, { type: 'array' });
-        const sheet = wb.Sheets[wb.SheetNames[0]];
-        const rawData = XLSX.utils.sheet_to_json(sheet);
-
-        masterDataset = rawData.map(r => ({
-            operator: r['Operator'] || r['Name'] || 'Shuvo',
-            category: r['CC Category'] || r['Category'] || '',
-            maker: r['Maker'] || r['Brand'] || '',
-            model: r['Model'] || r['Model Name'] || 'Unknown',
-            target: Number(r['Dhaka Target'] || r['Target'] || 0),
-            achieved: Number(r['Achieved'] || r['Dhaka Achieved'] || 0)
-        }));
-
-        renderDashboard(masterDataset);
-    };
-    reader.readAsArrayBuffer(file);
-}
-
-// Initializing Dashboard
-renderDashboard(masterDataset);
+// Initial Load
+updateTable(masterDataset);
 </script>
 
 </body>
