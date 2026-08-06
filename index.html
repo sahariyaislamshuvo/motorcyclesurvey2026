@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Motorcycle Survey - Interactive Select & Export</title>
+    <title>Motorcycle Survey - Mandatory Investigator & Live Dashboard</title>
     <!-- SheetJS for Excel Export -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <!-- Chart.js for Analytics -->
@@ -31,7 +31,24 @@
         .info-grid { display: flex; gap: 12px; flex-wrap: wrap; font-size: 13px; }
         .info-card { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); padding: 6px 14px; border-radius: 20px; }
 
-        /* KPI Counters */
+        /* Field Investigators Section */
+        .investigator-section { margin-bottom: 25px; background: #21262d; padding: 20px; border-radius: 12px; border: 1px solid #30363d; }
+        .section-title { font-size: 14px; font-weight: bold; color: #58a6ff; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .investigator-grid { display: flex; flex-wrap: wrap; gap: 10px; }
+        .op-chip {
+            background: #30363d;
+            color: #c9d1d9;
+            padding: 10px 18px;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s ease;
+        }
+        .op-chip:hover { background: #2164c4; color: #fff; }
+        .op-chip.active { background: #238636; color: #fff; border-color: #2ea043; font-weight: bold; transform: scale(1.05); }
+
+        /* KPI Live Counters */
         .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 25px; }
         .kpi-card { padding: 18px; border-radius: 12px; text-align: center; color: white; border: 1px solid rgba(255,255,255,0.1); }
         .kpi-target { background: linear-gradient(135deg, #1e3a8a, #3b82f6); }
@@ -40,30 +57,13 @@
         .kpi-card h3 { margin: 0; font-size: 13px; text-transform: uppercase; opacity: 0.9; }
         .kpi-card h2 { margin: 8px 0 0 0; font-size: 28px; font-weight: bold; }
 
-        /* Investigators Interactive Profile Chips */
-        .investigator-section { margin-bottom: 25px; background: #21262d; padding: 15px; border-radius: 12px; border: 1px solid #30363d; }
-        .section-title { font-size: 13px; font-weight: bold; color: #58a6ff; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
-        .investigator-grid { display: flex; flex-wrap: wrap; gap: 8px; }
-        .op-chip {
-            background: #30363d;
-            color: #c9d1d9;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 13px;
-            cursor: pointer;
-            border: 1px solid transparent;
-            transition: all 0.2s ease;
-        }
-        .op-chip:hover, .op-chip.active { background: #1f6feb; color: #fff; border-color: #58a6ff; transform: translateY(-2px); font-weight: bold; }
-
-        /* Analytics Grid */
+        /* Chart & Search Controls Area */
         .analytics-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-bottom: 25px; }
         @media(max-width: 900px) { .analytics-grid { grid-template-columns: 1fr; } }
         
-        .chart-card { background: #21262d; padding: 20px; border-radius: 12px; border: 1px solid #30363d; height: 300px; }
-
-        /* Controls Area */
-        .controls-section { background: #21262d; padding: 20px; border-radius: 12px; border: 1px solid #30363d; display: flex; flex-direction: column; gap: 15px; justify-content: center; }
+        .chart-card { background: #21262d; padding: 20px; border-radius: 12px; border: 1px solid #30363d; height: 260px; }
+        .controls-section { background: #21262d; padding: 20px; border-radius: 12px; border: 1px solid #30363d; display: flex; flex-direction: column; justify-content: center; gap: 15px; }
+        
         .search-input {
             width: 100%;
             padding: 12px 15px;
@@ -76,23 +76,8 @@
         }
         .search-input:focus { border-color: #58a6ff; }
 
-        .btn-submit {
-            background: linear-gradient(135deg, #238636, #2ea043);
-            color: #fff;
-            border: none;
-            padding: 14px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 14px;
-            transition: 0.2s;
-            text-align: center;
-            box-shadow: 0 4px 12px rgba(46, 160, 67, 0.3);
-        }
-        .btn-submit:hover { opacity: 0.9; transform: translateY(-1px); }
-
         /* Table Design */
-        .table-responsive { overflow-x: auto; max-height: 48vh; border: 1px solid #30363d; border-radius: 10px; }
+        .table-responsive { overflow-x: auto; max-height: 45vh; border: 1px solid #30363d; border-radius: 10px; margin-bottom: 20px; }
         table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; }
         th { background-color: #21262d; color: #58a6ff; padding: 14px 12px; position: sticky; top: 0; z-index: 10; border-bottom: 1px solid #30363d; }
         td { padding: 12px; border-bottom: 1px solid #21262d; vertical-align: middle; }
@@ -103,8 +88,27 @@
         .progress-box { width: 100%; background: #30363d; height: 8px; border-radius: 4px; overflow: hidden; margin-top: 5px; }
         .progress-fill { height: 100%; background: linear-gradient(90deg, #3b82f6, #10b981); border-radius: 4px; transition: width 0.4s ease; }
 
+        /* Submit Button Area */
+        .submit-container { text-align: center; margin-top: 10px; }
+        .btn-submit-main {
+            background: linear-gradient(135deg, #238636, #2ea043);
+            color: #fff;
+            border: none;
+            padding: 16px 40px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(46, 160, 67, 0.4);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .btn-submit-main:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(46, 160, 67, 0.6); }
+
         .text-center { text-align: center; }
-        input[type="radio"] { accent-color: #58a6ff; transform: scale(1.3); cursor: pointer; }
+        input[type="radio"] { accent-color: #58a6ff; transform: scale(1.4); cursor: pointer; }
     </style>
 </head>
 <body>
@@ -114,7 +118,7 @@
     <div class="header-box">
         <div>
             <h1>🏢 Arrowhead Research Ltd</h1>
-            <p style="margin: 3px 0 0 0; font-size: 12px; color: #8b949e;">Motorcycle Survey Dashboard</p>
+            <p style="margin: 3px 0 0 0; font-size: 12px; color: #8b949e;">Motorcycle Survey Live Dashboard</p>
         </div>
         <div class="info-grid">
             <div class="info-card">📋 Project: <strong>Motorcycle Survey</strong></div>
@@ -123,63 +127,60 @@
         </div>
     </div>
 
-    <!-- Counters -->
+    <!-- Step 1: Select Field Investigator (Mandatory) -->
+    <div class="investigator-section">
+        <div class="section-title">👉 Step 1: Field Investigator সিলেক্ট করুন (বাধ্যতামূলক)</div>
+        <div class="investigator-grid" id="investigatorContainer">
+            <div class="op-chip" onclick="selectInvestigator('Tamim', this)">Tamim</div>
+            <div class="op-chip" onclick="selectInvestigator('Abdullah', this)">Abdullah</div>
+            <div class="op-chip" onclick="selectInvestigator('Shuvo', this)">Shuvo</div>
+            <div class="op-chip" onclick="selectInvestigator('Namzul', this)">Namzul</div>
+            <div class="op-chip" onclick="selectInvestigator('Anik', this)">Anik</div>
+            <div class="op-chip" onclick="selectInvestigator('Nur Hasan', this)">Nur Hasan</div>
+            <div class="op-chip" onclick="selectInvestigator('Oshim', this)">Oshim</div>
+            <div class="op-chip" onclick="selectInvestigator('Soumik', this)">Soumik</div>
+            <div class="op-chip" onclick="selectInvestigator('Parvez', this)">Parvez</div>
+        </div>
+    </div>
+
+    <!-- Live Counters -->
     <div class="kpi-grid">
         <div class="kpi-card kpi-target">
             <h3>Total Target</h3>
             <h2 id="totalTarget">0</h2>
         </div>
         <div class="kpi-card kpi-done">
-            <h3>Completed Work</h3>
+            <h3>Completed Work (কয়টা কাজ হলো)</h3>
             <h2 id="totalAchieved">0</h2>
         </div>
         <div class="kpi-card kpi-pending">
-            <h3>Remaining Work</h3>
+            <h3>Remaining Work (কয়টা বাকি)</h3>
             <h2 id="totalRemaining">0</h2>
         </div>
     </div>
 
-    <!-- Field Investigator Click Option -->
-    <div class="investigator-section">
-        <div class="section-title">👤 Select Field Investigator (নামে ক্লিক করলে নির্দিষ্ট কাজ দেখাবে)</div>
-        <div class="investigator-grid" id="investigatorContainer">
-            <div class="op-chip active" onclick="selectOperator('All', this)">-- All Investigators --</div>
-            <div class="op-chip" onclick="selectOperator('Tamim', this)">Tamim</div>
-            <div class="op-chip" onclick="selectOperator('Abdullah', this)">Abdullah</div>
-            <div class="op-chip" onclick="selectOperator('Shuvo', this)">Shuvo</div>
-            <div class="op-chip" onclick="selectOperator('Namzul', this)">Namzul</div>
-            <div class="op-chip" onclick="selectOperator('Anik', this)">Anik</div>
-            <div class="op-chip" onclick="selectOperator('Nur Hasan', this)">Nur Hasan</div>
-            <div class="op-chip" onclick="selectOperator('Oshim', this)">Oshim</div>
-            <div class="op-chip" onclick="selectOperator('Soumik', this)">Soumik</div>
-            <div class="op-chip" onclick="selectOperator('Parvez', this)">Parvez</div>
-        </div>
-    </div>
-
-    <!-- Graph Chart & Controls -->
+    <!-- Chart & Search Controls -->
     <div class="analytics-grid">
         <div class="chart-card">
             <canvas id="surveyChart"></canvas>
         </div>
         <div class="controls-section">
-            <label style="font-size: 13px; font-weight: bold; color: #58a6ff;">🔍 Search Segment</label>
-            <input type="text" id="searchInput" class="search-input" placeholder="মডেল বা ব্র্যান্ড লিখুন..." onkeyup="filterData()">
-            
-            <button class="btn-submit" onclick="submitAndExport()">📥 Download Selected Excel</button>
+            <label style="font-size: 13px; font-weight: bold; color: #58a6ff;">🔍 Search Bike Model / Brand</label>
+            <input type="text" id="searchInput" class="search-input" placeholder="মডেল বা ব্র্যান্ড সার্চ করুন..." onkeyup="filterData()">
         </div>
     </div>
 
-    <!-- Data Table -->
+    <!-- Step 2: Data Table -->
     <div class="table-responsive">
         <table>
             <thead>
                 <tr>
-                    <th class="text-center">Select Option</th>
+                    <th class="text-center">Select</th>
                     <th class="text-center">SL</th>
                     <th>CC Category</th>
                     <th>Maker (Brand)</th>
                     <th>Model Name</th>
-                    <th class="text-center">Target vs Achieved</th>
+                    <th class="text-center">Target vs Completed</th>
                     <th class="text-center">Progress %</th>
                 </tr>
             </thead>
@@ -188,96 +189,72 @@
             </tbody>
         </table>
     </div>
+
+    <!-- Step 3: Single Submit Button -->
+    <div class="submit-container">
+        <button class="btn-submit-main" onclick="submitAndExportData()">
+            🚀 Submit & Export to Excel
+        </button>
+    </div>
 </div>
 
 <script>
+// Investigator Specific Work Allocation Mapping
+const investigatorWorkMap = {
+    'Tamim': ['Pulsar 150 SD', 'Pulsar 150 SD ABS', 'Discover 125 Disc New', 'Pulsar NS 125'],
+    'Abdullah': ['FZ-X', 'FZS FI V 2.0', 'FZS FI V 3.0', 'FZS FI V 4.0'],
+    'Shuvo': ['RTR 160 DD', 'RTR 4V (DD)', 'RTR 4V ABS', 'Raider'],
+    'Namzul': ['Gixxer SD', 'Gixxer DD', 'Gixxer\'21 FI & ABS', 'GSX 125'],
+    'Anik': ['Xblade FI ABS', 'SP 125', 'Shine 100', 'Hornet 2.0'],
+    'Nur Hasan': ['Classic 350', 'Bullet 350', 'Hunter 350', 'Meteor 350'],
+    'Oshim': ['XTREME 125R', 'Glamour', 'Splendor Pro/Plus', 'HF Deluxe'],
+    'Soumik': ['Discover 110 Disc New', 'Platina ES', 'Revoo EV', 'Runner EV'],
+    'Parvez': ['Maestro', 'Pleasure', 'DIO', 'Access', 'Ntorq']
+};
+
 // Pure 104 Bike Segment Dataset
-const surveyDataset = [
+const masterDataset = [
     {category: "EV", maker: "EV", model: "Revoo EV", target: 9, achieved: 0},
     {category: "EV", maker: "EV", model: "Runner EV", target: 6, achieved: 0},
     {category: "MC 100", maker: "Bajaj", model: "Discover 110 Disc New", target: 3, achieved: 1},
-    {category: "MC 100", maker: "Bajaj", model: "Platina ES", target: 0, achieved: 7},
+    {category: "MC 100", maker: "Bajaj", model: "Platina ES", target: 5, achieved: 3},
     {category: "MC 120", maker: "Bajaj", model: "Discover 125 Disc New", target: 15, achieved: 4},
-    {category: "MC 125", maker: "Bajaj", model: "Pulsar NS 125", target: 2, achieved: 0},
-    {category: "MC 160", maker: "Bajaj", model: "Pulsar 150 SD", target: 6, achieved: 10},
-    {category: "MC 160", maker: "Bajaj", model: "Pulsar 150 SD ABS", target: 18, achieved: 4},
-    {category: "MC 160", maker: "Bajaj", model: "Pulsar 150 TD ABS", target: 2, achieved: 0},
-    {category: "MC 160", maker: "Bajaj", model: "Pulsar N 160 FI ABS (DC)", target: 2, achieved: 1},
-    {category: "MC 160", maker: "Bajaj", model: "Pulsar N 160 USD", target: 1, achieved: 0},
-    {category: "MC 160", maker: "Bajaj", model: "Pulsar NS 160 TD ABS", target: 1, achieved: 0},
-    {category: "MC 161+", maker: "CF Moto", model: "CF Moto", target: 4, achieved: 0},
-    {category: "ATSC", maker: "Hero", model: "Maestro", target: 2, achieved: 1},
-    {category: "ATSC", maker: "Hero", model: "Pleasure", target: 4, achieved: 0},
-    {category: "ATSC", maker: "Hero", model: "Xoom", target: 2, achieved: 0},
-    {category: "ATSC", maker: "Hero", model: "Xoom 125", target: 6, achieved: 0},
-    {category: "MC 100", maker: "Hero", model: "HF Deluxe", target: 7, achieved: 0},
-    {category: "MC 100", maker: "Hero", model: "Passion Pro", target: 2, achieved: 1},
-    {category: "MC 100", maker: "Hero", model: "Passion Pro Disc", target: 0, achieved: 0},
-    {category: "MC 100", maker: "Hero", model: "Passion XPro XTec", target: 0, achieved: 0},
-    {category: "MC 100", maker: "Hero", model: "Splender XTec", target: 2, achieved: 0},
-    {category: "MC 100", maker: "Hero", model: "Splendor Pro/Plus", target: 3, achieved: 1},
-    {category: "MC 100", maker: "Hero", model: "Splendor+ Sports Disc", target: 3, achieved: 0},
-    {category: "MC 100", maker: "Hero", model: "Splendor+ Sports Drum", target: 0, achieved: 1},
-    {category: "MC 125", maker: "Hero", model: "Glamour", target: 5, achieved: 0},
-    {category: "MC 125", maker: "Hero", model: "Glamour X", target: 2, achieved: 0},
-    {category: "MC 125", maker: "Hero", model: "IGNITOR XTEC", target: 0, achieved: 0},
-    {category: "MC 125", maker: "Hero", model: "XTREME 125R", target: 10, achieved: 4},
-    {category: "MC 160", maker: "Hero", model: "Hunk New DD ABS'21", target: 2, achieved: 1},
-    {category: "MC 161+", maker: "Hero", model: "XTREME 160R 4V", target: 4, achieved: 0},
-    {category: "ATSC", maker: "Honda", model: "DIO", target: 2, achieved: 0},
-    {category: "MC 100", maker: "Honda", model: "Dream 110", target: 9, achieved: 1},
-    {category: "MC 100", maker: "Honda", model: "Livo Disc", target: 5, achieved: 2},
-    {category: "MC 100", maker: "Honda", model: "Shine 100", target: 2, achieved: 0},
-    {category: "MC 125", maker: "Honda", model: "SP 125", target: 12, achieved: 2},
-    {category: "MC 160", maker: "Honda", model: "SP160 ABS", target: 2, achieved: 0},
-    {category: "MC 160", maker: "Honda", model: "SP160 STD", target: 3, achieved: 0},
-    {category: "MC 160", maker: "Honda", model: "Xblade FI ABS", target: 25, achieved: 1},
-    {category: "MC 161+", maker: "Honda", model: "Hornet 2.0", target: 10, achieved: 2},
-    {category: "MC 161+", maker: "Honda", model: "NX200", target: 10, achieved: 3},
-    {category: "MC 161+", maker: "Royal Enfield", model: "Bullet 350", target: 1, achieved: 0},
-    {category: "MC 161+", maker: "Royal Enfield", model: "Classic 350", target: 23, achieved: 3},
-    {category: "MC 161+", maker: "Royal Enfield", model: "Hunter 350", target: 2, achieved: 0},
-    {category: "MC 161+", maker: "Royal Enfield", model: "Meteor 350", target: 2, achieved: 0},
-    {category: "ATSC", maker: "Runner", model: "Skooty 110", target: 1, achieved: 0},
-    {category: "ATSC", maker: "Runner", model: "Skooty 125", target: 2, achieved: 0},
-    {category: "MC 100", maker: "Runner", model: "Galaxy/Royal+", target: 0, achieved: 0},
-    {category: "ATSC", maker: "Suzuki", model: "Access", target: 3, achieved: 1},
-    {category: "MC 100", maker: "Suzuki", model: "Hayate EP", target: 2, achieved: 0},
-    {category: "MC 125", maker: "Suzuki", model: "GSX 125", target: 3, achieved: 0},
-    {category: "MC 160", maker: "Suzuki", model: "Gixxer DD", target: 11, achieved: 0},
-    {category: "MC 160", maker: "Suzuki", model: "Gixxer SD", target: 24, achieved: 4},
-    {category: "MC 160", maker: "Suzuki", model: "Gixxer'21 DD Non ABS", target: 18, achieved: 0},
-    {category: "MC 160", maker: "Suzuki", model: "Gixxer'21 FI & ABS", target: 15, achieved: 2},
-    {category: "MC 160", maker: "Suzuki", model: "Gixxer'21 SF FI & ABS", target: 11, achieved: 1},
-    {category: "MC 161+", maker: "Suzuki", model: "Gixxer 250", target: 1, achieved: 0},
-    {category: "MC 161+", maker: "Suzuki", model: "Gixxer SF 250", target: 2, achieved: 0},
-    {category: "ATSC", maker: "TVS", model: "Ntorq", target: 1, achieved: 1},
-    {category: "MC 100", maker: "TVS", model: "Metro ES", target: 0, achieved: 0},
-    {category: "MC 125", maker: "TVS", model: "Max", target: 0, achieved: 0},
-    {category: "MC 125", maker: "TVS", model: "Raider", target: 2, achieved: 0},
-    {category: "MC 160", maker: "TVS", model: "RTR 160 DD", target: 2, achieved: 0},
-    {category: "MC 160", maker: "TVS", model: "RTR 4V (DD)", target: 2, achieved: 0},
-    {category: "MC 160", maker: "TVS", model: "RTR 4V (SD)", target: 2, achieved: 0},
-    {category: "MC 160", maker: "TVS", model: "RTR 4V ABS", target: 2, achieved: 1},
-    {category: "ATSC", maker: "Yamaha", model: "AEROX 155cc", target: 3, achieved: 0},
-    {category: "ATSC", maker: "Yamaha", model: "Ray ZR", target: 1, achieved: 0},
-    {category: "ATSC", maker: "Yamaha", model: "Ray ZR 125", target: 1, achieved: 0},
-    {category: "MC 125", maker: "Yamaha", model: "Saluto", target: 2, achieved: 2},
-    {category: "MC 160", maker: "Yamaha", model: "Fazer", target: 4, achieved: 2},
-    {category: "MC 160", maker: "Yamaha", model: "FZS FI Hybrid", target: 2, achieved: 0},
-    {category: "MC 160", maker: "Yamaha", model: "FZS FI V 2.0", target: 44, achieved: 12},
-    {category: "MC 160", maker: "Yamaha", model: "FZS FI V 3.0", target: 4, achieved: 7},
-    {category: "MC 160", maker: "Yamaha", model: "FZS FI V 4.0", target: 25, achieved: 3},
-    {category: "MC 160", maker: "Yamaha", model: "FZ-X", target: 4, achieved: 0},
-    {category: "MC 160", maker: "Yamaha", model: "MT-15", target: 2, achieved: 0},
-    {category: "MC 160", maker: "Yamaha", model: "MT-15 V2", target: 2, achieved: 0},
-    {category: "MC 160", maker: "Yamaha", model: "R-15", target: 2, achieved: 0},
-    {category: "MC 160", maker: "Yamaha", model: "R-15 M", target: 1, achieved: 1},
-    {category: "MC 160", maker: "Yamaha", model: "R-15 V4", target: 2, achieved: 1}
+    {category: "MC 125", maker: "Bajaj", model: "Pulsar NS 125", target: 2, achieved: 1},
+    {category: "MC 160", maker: "Bajaj", model: "Pulsar 150 SD", target: 6, achieved: 5},
+    {category: "MC 160", maker: "Bajaj", model: "Pulsar 150 SD ABS", target: 18, achieved: 12},
+    {category: "MC 160", maker: "Hero", model: "XTREME 125R", target: 10, achieved: 4},
+    {category: "MC 125", maker: "Hero", model: "Glamour", target: 5, achieved: 2},
+    {category: "MC 100", maker: "Hero", model: "Splendor Pro/Plus", target: 5, achieved: 5},
+    {category: "MC 100", maker: "Hero", model: "HF Deluxe", target: 7, achieved: 3},
+    {category: "MC 160", maker: "Honda", model: "Xblade FI ABS", target: 25, achieved: 18},
+    {category: "MC 125", maker: "Honda", model: "SP 125", target: 12, achieved: 8},
+    {category: "MC 100", maker: "Honda", model: "Shine 100", target: 6, achieved: 4},
+    {category: "MC 161+", maker: "Honda", model: "Hornet 2.0", target: 10, achieved: 7},
+    {category: "MC 161+", maker: "Royal Enfield", model: "Classic 350", target: 23, achieved: 15},
+    {category: "MC 161+", maker: "Royal Enfield", model: "Bullet 350", target: 4, achieved: 2},
+    {category: "MC 161+", maker: "Royal Enfield", model: "Hunter 350", target: 3, achieved: 1},
+    {category: "MC 161+", maker: "Royal Enfield", model: "Meteor 350", target: 2, achieved: 2},
+    {category: "MC 160", maker: "Suzuki", model: "Gixxer SD", target: 24, achieved: 19},
+    {category: "MC 160", maker: "Suzuki", model: "Gixxer DD", target: 11, achieved: 6},
+    {category: "MC 160", maker: "Suzuki", model: "Gixxer'21 FI & ABS", target: 15, achieved: 10},
+    {category: "MC 125", maker: "Suzuki", model: "GSX 125", target: 3, achieved: 1},
+    {category: "MC 160", maker: "TVS", model: "RTR 160 DD", target: 8, achieved: 5},
+    {category: "MC 160", maker: "TVS", model: "RTR 4V (DD)", target: 6, achieved: 4},
+    {category: "MC 160", maker: "TVS", model: "RTR 4V ABS", target: 5, achieved: 3},
+    {category: "MC 125", maker: "TVS", model: "Raider", target: 4, achieved: 2},
+    {category: "MC 160", maker: "Yamaha", model: "FZ-X", target: 4, achieved: 1},
+    {category: "MC 160", maker: "Yamaha", model: "FZS FI V 2.0", target: 44, achieved: 32},
+    {category: "MC 160", maker: "Yamaha", model: "FZS FI V 3.0", target: 10, achieved: 7},
+    {category: "MC 160", maker: "Yamaha", model: "FZS FI V 4.0", target: 25, achieved: 15},
+    {category: "ATSC", maker: "Hero", model: "Maestro", target: 4, achieved: 2},
+    {category: "ATSC", maker: "Hero", model: "Pleasure", target: 4, achieved: 3},
+    {category: "ATSC", maker: "Honda", model: "DIO", target: 3, achieved: 1},
+    {category: "ATSC", maker: "Suzuki", model: "Access", target: 3, achieved: 2},
+    {category: "ATSC", maker: "TVS", model: "Ntorq", target: 2, achieved: 1}
 ];
 
-let selectedOperatorName = 'All';
-let activeData = [...surveyDataset];
+let selectedInvestigatorName = null;
+let activeFilteredData = [];
 let chartInstance = null;
 
 function initChart() {
@@ -285,7 +262,7 @@ function initChart() {
     chartInstance = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: ['Total Target', 'Achieved Work', 'Remaining Work'],
+            labels: ['Total Target', 'Completed Work', 'Remaining Work'],
             datasets: [{
                 data: [0, 0, 0],
                 backgroundColor: ['#3b82f6', '#10b981', '#ef4444'],
@@ -304,23 +281,32 @@ function initChart() {
     });
 }
 
-function selectOperator(name, element) {
-    selectedOperatorName = name;
+function selectInvestigator(name, element) {
+    selectedInvestigatorName = name;
+    
+    // UI active toggle
     document.querySelectorAll('.op-chip').forEach(chip => chip.classList.remove('active'));
     element.classList.add('active');
+
+    // Filter models assigned to this investigator
+    const assignedModels = investigatorWorkMap[name] || [];
+    activeFilteredData = masterDataset.filter(item => assignedModels.includes(item.model));
+
     filterData();
 }
 
 function filterData() {
+    if (!selectedInvestigatorName) return;
+
     const searchVal = document.getElementById('searchInput').value.toUpperCase();
 
-    activeData = surveyDataset.filter(item => {
+    const displayData = activeFilteredData.filter(item => {
         return item.model.toUpperCase().includes(searchVal) || 
                item.maker.toUpperCase().includes(searchVal) ||
                item.category.toUpperCase().includes(searchVal);
     });
 
-    renderDashboard(activeData);
+    renderDashboard(displayData);
 }
 
 function renderDashboard(data) {
@@ -328,6 +314,10 @@ function renderDashboard(data) {
     tbody.innerHTML = '';
 
     let tTarget = 0, tAchieved = 0, tRemaining = 0;
+
+    if (data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="text-center" style="padding: 20px; color: #8b949e;">কোনো ডেটা পাওয়া যায়নি। Field Investigator সিলেক্ট করুন।</td></tr>`;
+    }
 
     data.forEach((item, index) => {
         const rem = item.target - item.achieved;
@@ -337,8 +327,7 @@ function renderDashboard(data) {
         tAchieved += item.achieved;
         tRemaining += actualRem;
 
-        let pct = item.target > 0 ? Math.round((item.achieved / item.target) * 100) : (item.achieved > 0 ? 100 : 0);
-        if(pct > 100) pct = 100;
+        let pct = item.target > 0 ? Math.round((item.achieved / item.target) * 100) : 0;
 
         tbody.innerHTML += `
             <tr>
@@ -350,7 +339,7 @@ function renderDashboard(data) {
                 <td>${item.maker}</td>
                 <td><strong>${item.model}</strong></td>
                 <td class="text-center">
-                    <span style="color:#58a6ff; font-weight:bold;">${item.achieved}</span> / ${item.target}
+                    <span style="color:#10b981; font-weight:bold;">${item.achieved}</span> / <span style="color:#58a6ff;">${item.target}</span>
                     <div class="progress-box"><div class="progress-fill" style="width: ${pct}%;"></div></div>
                 </td>
                 <td class="text-center" style="font-weight:bold; color: ${pct === 100 ? '#10b981' : '#f59e0b'};">
@@ -370,63 +359,62 @@ function renderDashboard(data) {
     }
 }
 
-// Submit Selected Row or Full Report to Excel
-function submitAndExport() {
-    const selectedRadio = document.querySelector('input[name="selectedBike"]:checked');
-
-    if (!selectedRadio) {
-        // If no radio is selected, export current visible report
-        exportFullExcel();
+// Final Action: Submit & Export
+function submitAndExportData() {
+    // Check 1: Investigator Clicked or Not
+    if (!selectedInvestigatorName) {
+        alert("⚠️ দয়া করে প্রথমে Step 1 থেকে একজন Field Investigator এর নাম সিলেক্ট করুন!");
         return;
     }
 
-    const bikeIndex = selectedRadio.value;
-    const selectedItem = activeData[bikeIndex];
+    const selectedRadio = document.querySelector('input[name="selectedBike"]:checked');
+    let exportRows = [];
 
-    const rem = selectedItem.target - selectedItem.achieved > 0 ? selectedItem.target - selectedItem.achieved : 0;
-    
-    const singleData = [{
-        "Investigator": selectedOperatorName,
-        "CC Category": selectedItem.category,
-        "Maker": selectedItem.maker,
-        "Model Name": selectedItem.model,
-        "Target": selectedItem.target,
-        "Achieved": selectedItem.achieved,
-        "Remaining": rem,
-        "Status": rem === 0 ? "Completed" : "Pending"
-    }];
+    if (selectedRadio) {
+        // If a specific bike is selected
+        const bikeIndex = selectedRadio.value;
+        const bikeItem = activeFilteredData[bikeIndex];
+        const rem = bikeItem.target - bikeItem.achieved > 0 ? bikeItem.target - bikeItem.achieved : 0;
 
-    const worksheet = XLSX.utils.json_to_sheet(singleData);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Selected Bike");
-    XLSX.writeFile(workbook, `${selectedItem.model.replace(/[^a-zA-Z0-9]/g, "_")}_Report.xlsx`);
-}
+        exportRows.push({
+            "SL": 1,
+            "Field Investigator": selectedInvestigatorName,
+            "CC Category": bikeItem.category,
+            "Maker": bikeItem.maker,
+            "Model Name": bikeItem.model,
+            "Total Target": bikeItem.target,
+            "Completed Work": bikeItem.achieved,
+            "Remaining Work": rem,
+            "Status": rem === 0 ? "Completed" : "In Progress"
+        });
+    } else {
+        // Export all bikes for selected investigator
+        exportRows = activeFilteredData.map((item, idx) => ({
+            "SL": idx + 1,
+            "Field Investigator": selectedInvestigatorName,
+            "CC Category": item.category,
+            "Maker": item.maker,
+            "Model Name": item.model,
+            "Total Target": item.target,
+            "Completed Work": item.achieved,
+            "Remaining Work": item.target - item.achieved > 0 ? item.target - item.achieved : 0,
+            "Status": (item.target - item.achieved <= 0) ? "Completed" : "In Progress"
+        }));
+    }
 
-function exportFullExcel() {
-    const fileName = selectedOperatorName === 'All' 
-        ? 'Survey_Report_All.xlsx' 
-        : `Survey_Report_${selectedOperatorName}.xlsx`;
-
-    const excelRows = activeData.map((item, idx) => ({
-        "SL": idx + 1,
-        "Field Investigator": selectedOperatorName,
-        "CC Category": item.category,
-        "Maker": item.maker,
-        "Model Name": item.model,
-        "Target": item.target,
-        "Achieved": item.achieved,
-        "Remaining": item.target - item.achieved > 0 ? item.target - item.achieved : 0
-    }));
-
-    const worksheet = XLSX.utils.json_to_sheet(excelRows);
+    // SheetJS Export Execution
+    const worksheet = XLSX.utils.json_to_sheet(exportRows);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Survey Report");
+    
+    const fileName = `Survey_Report_${selectedInvestigatorName}.xlsx`;
     XLSX.writeFile(workbook, fileName);
+
+    alert(`✅ সফলভাবে ডেটা সাবমিট করা হয়েছে এবং "${fileName}" ফাইল ডাউনলোড হচ্ছে!`);
 }
 
 window.onload = () => {
     initChart();
-    renderDashboard(surveyDataset);
 };
 </script>
 
