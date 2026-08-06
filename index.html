@@ -5,13 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Motorcycle Survey - Arrowhead Research Ltd</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Supabase JS SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&family=Plus+Jakarta+Sans:wght@500;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #2563eb;
-            --primary-dark: #1d4ed8;
             --bg: #0f172a;
             --card-bg: #1e293b;
             --card-border: #334155;
@@ -26,7 +24,6 @@
         body { background-color: var(--bg); color: var(--text-main); padding: 24px; min-height: 100vh; }
         .container { max-width: 1400px; margin: 0 auto; }
 
-        /* Header Branding */
         header {
             background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%);
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -37,9 +34,9 @@
         .company-badge {
             display: inline-block; background: rgba(56, 189, 248, 0.15); color: #38bdf8;
             padding: 6px 14px; border-radius: 30px; font-size: 13px; font-weight: 700;
-            letter-spacing: 0.5px; border: 1px solid rgba(56, 189, 248, 0.3); margin-bottom: 8px;
+            margin-bottom: 8px; border: 1px solid rgba(56, 189, 248, 0.3);
         }
-        .header-titles h1 { font-size: 28px; color: #ffffff; font-weight: 700; letter-spacing: -0.5px; }
+        .header-titles h1 { font-size: 28px; color: #ffffff; font-weight: 700; }
         .header-titles p { font-size: 15px; color: var(--text-muted); margin-top: 4px; }
         
         .credits-box {
@@ -59,7 +56,6 @@
             padding: 10px 16px; border-radius: 10px; border: 1px solid var(--card-border);
             background: #0f172a; color: #fff; font-size: 15px; outline: none; width: 260px;
         }
-        .user-panel input:focus { border-color: var(--primary); }
 
         .stats-grid {
             display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -85,13 +81,12 @@
             padding: 10px 16px; border-radius: 10px; border: 1px solid var(--card-border);
             background: #0f172a; color: #fff; font-size: 14px; outline: none; width: 100%;
         }
-        select:focus { border-color: #38bdf8; }
 
         .chart-card {
             background: var(--card-bg); padding: 28px; border-radius: 20px;
             border: 1px solid var(--card-border); margin-bottom: 28px;
         }
-        .chart-container { position: relative; height: 520px; width: 100%; margin-top: 15px; }
+        .chart-container { position: relative; height: 500px; width: 100%; margin-top: 15px; }
 
         .table-card, .log-card {
             background: var(--card-bg); padding: 28px; border-radius: 20px;
@@ -105,34 +100,29 @@
 
         .action-btn {
             background: #0284c7; color: white; border: none; padding: 8px 14px;
-            border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 13px;
-            transition: all 0.2s; margin-right: 6px;
+            border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 13px; margin-right: 6px;
         }
-        .action-btn:hover { background: #0369a1; }
         .action-btn:disabled { background: #334155; color: #64748b; cursor: not-allowed; }
 
         .cancel-btn {
             background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3);
             padding: 8px 12px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 13px;
-            transition: all 0.2s;
         }
-        .cancel-btn:hover { background: #ef4444; color: white; }
 
         .export-btn {
             background: linear-gradient(135deg, #10b981, #059669); color: white; border: none;
             padding: 12px 22px; border-radius: 10px; cursor: pointer; font-weight: 700; font-size: 14px;
-            display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
-        }
-
-        .alert-toast {
-            position: fixed; bottom: 24px; right: 24px; background: #0284c7; color: white;
-            padding: 16px 24px; border-radius: 12px; font-weight: 600;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: none; z-index: 9999;
         }
 
         .badge { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; }
         .badge-category { background: rgba(56, 189, 248, 0.1); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.2); }
         .badge-brand { background: rgba(245, 158, 11, 0.1); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.2); }
+        
+        .alert-toast {
+            position: fixed; bottom: 24px; right: 24px; background: #0284c7; color: white;
+            padding: 16px 24px; border-radius: 12px; font-weight: 600;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: none; z-index: 9999;
+        }
     </style>
 </head>
 <body>
@@ -148,21 +138,21 @@
             <div><strong>Company:</strong> Arrowhead Research Ltd</div>
             <div><strong>Project:</strong> Motorcycle Survey</div>
             <div><strong>Supervisor:</strong> Tuhin Pradhan</div>
-            <div><strong>Software Developer:</strong> Shuvo Biswas</div>
+            <div><strong>Developer:</strong> Sahariya Islam Shuvo</div>
         </div>
     </header>
 
     <div class="user-panel">
         <div class="user-input-group">
-            <label for="surveyor-name"><strong>সার্ভেয়ার / ডাটা এন্ট্রি অপারেটর:</strong></label>
-            <input type="text" id="surveyor-name" placeholder="আপনার নাম লিখুন..." value="Shuvo Biswas">
+            <label for="surveyor-name"><strong>অপারেটরের নাম:</strong></label>
+            <input type="text" id="surveyor-name" placeholder="আপনার নাম লিখুন..." value="Sahariya Islam Shuvo">
         </div>
         <button class="export-btn" onclick="exportToCSV()">📥 এক্সেল (CSV) রিপোর্ট নামাও</button>
     </div>
 
     <div class="stats-grid">
         <div class="stat-card">
-            <h3>মোট টার্গেট</h3>
+            <h3>মোট টার্গেট (Live)</h3>
             <div class="value" id="stat-total-target" style="color: #38bdf8;">0</div>
         </div>
         <div class="stat-card">
@@ -191,7 +181,7 @@
     </div>
 
     <div class="chart-card">
-        <h2>📊 ক্যাটাগরি ও মডেল ভিত্তিক বড় লাইভ গ্রাফ (Live Analytics Chart)</h2>
+        <h2>📊 লাইভ এনালিটিক্স গ্রাফ (Live Analytics Chart)</h2>
         <div class="chart-container">
             <canvas id="mainChart"></canvas>
         </div>
@@ -240,81 +230,87 @@
 <div id="toast" class="alert-toast"></div>
 
 <script>
-    // --- Supabase Integration ---
     const SUPABASE_URL = 'https://drzuozfvpcppextsissg.supabase.co';
     const SUPABASE_KEY = 'Sb_publishable_4Rnx6U1R2S9X9qTr1xVSQg_9EgYFefd';
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    const rawData = [
-        {"category": "MC 125", "brand": "Yamaha", "model": "Saluto", "dhaka_target": 2},
-        {"category": "MC 160", "brand": "Yamaha", "model": "FZS Fi V 3.0", "dhaka_target": 4},
-        {"category": "MC 160", "brand": "Yamaha", "model": "FZS Fi V 2.0", "dhaka_target": 44},
-        {"category": "MC 160", "brand": "Yamaha", "model": "Fazer", "dhaka_target": 4},
-        {"category": "MC 160", "brand": "Yamaha", "model": "MT-15", "dhaka_target": 2},
-        {"category": "MC 160", "brand": "Yamaha", "model": "MT-15 V2", "dhaka_target": 2},
-        {"category": "MC 160", "brand": "Yamaha", "model": "R-15", "dhaka_target": 2},
-        {"category": "MC 160", "brand": "Yamaha", "model": "R-15 V4", "dhaka_target": 2},
-        {"category": "MC 160", "brand": "Yamaha", "model": "R-15 M", "dhaka_target": 2},
-        {"category": "MC 160", "brand": "Yamaha", "model": "FZS Fi V 4.0", "dhaka_target": 25},
-        {"category": "MC 160", "brand": "Yamaha", "model": "FZ-X", "dhaka_target": 4},
-        {"category": "MC 160", "brand": "Yamaha", "model": "FZS Fi Hybrid", "dhaka_target": 2},
-        {"category": "ATSC", "brand": "Yamaha", "model": "Ray ZR", "dhaka_target": 1},
-        {"category": "ATSC", "brand": "Yamaha", "model": "Ray ZR 125", "dhaka_target": 1},
-        {"category": "ATSC", "brand": "Yamaha", "model": "AEROX 155cc", "dhaka_target": 3},
-        {"category": "MC 125", "brand": "TVS", "model": "Raider", "dhaka_target": 2},
-        {"category": "MC 160", "brand": "TVS", "model": "RTR 160 DD", "dhaka_target": 2},
-        {"category": "MC 160", "brand": "TVS", "model": "RTR 4V (SD)", "dhaka_target": 2},
-        {"category": "MC 160", "brand": "TVS", "model": "RTR 4V (DD)", "dhaka_target": 2},
-        {"category": "MC161+", "brand": "Royal Enfield", "model": "Hunter 350", "dhaka_target": 2},
-        {"category": "MC161+", "brand": "Royal Enfield", "model": "Bullet 350", "dhaka_target": 1},
-        {"category": "MC161+", "brand": "Royal Enfield", "model": "Classic 350", "dhaka_target": 23},
-        {"category": "MC161+", "brand": "Royal Enfield", "model": "Meteor 350", "dhaka_target": 2},
-        {"category": "MC 100", "brand": "Suzuki", "model": "Hayate EP", "dhaka_target": 2},
-        {"category": "MC 125", "brand": "Suzuki", "model": "GSX 125", "dhaka_target": 3},
-        {"category": "MC 160", "brand": "Suzuki", "model": "Gixxer SD", "dhaka_target": 24},
-        {"category": "MC 160", "brand": "Suzuki", "model": "Gixxer DD", "dhaka_target": 11},
-        {"category": "MC 100", "brand": "Honda", "model": "Shine 100", "dhaka_target": 2},
-        {"category": "MC 125", "brand": "Honda", "model": "SP 125", "dhaka_target": 12},
-        {"category": "MC 160", "brand": "Honda", "model": "Xblade FI ABS", "dhaka_target": 25},
-        {"category": "MC161+", "brand": "Honda", "model": "Hornet 2.0", "dhaka_target": 10},
-        {"category": "MC 100", "brand": "Hero", "model": "HF Delux", "dhaka_target": 7},
-        {"category": "MC 125", "brand": "Hero", "model": "Glamour", "dhaka_target": 5},
-        {"category": "MC 125", "brand": "Hero", "model": "XTREME 125R", "dhaka_target": 10},
-        {"category": "MC 125", "brand": "Bajaj", "model": "Discover125 Disc New", "dhaka_target": 15},
-        {"category": "MC 160", "brand": "Bajaj", "model": "Pulsar 150 SD ABS", "dhaka_target": 18}
+    // ডিফল্ট টার্গেট ডাটা সেট
+    const initialDataset = [
+        {"id": 0, "category": "MC 125", "brand": "Yamaha", "model": "Saluto", "dhaka_target": 2, "completed": 0},
+        {"id": 1, "category": "MC 160", "brand": "Yamaha", "model": "FZS Fi V 3.0", "dhaka_target": 4, "completed": 0},
+        {"id": 2, "category": "MC 160", "brand": "Yamaha", "model": "FZS Fi V 2.0", "dhaka_target": 44, "completed": 0},
+        {"id": 3, "category": "MC 160", "brand": "Yamaha", "model": "Fazer", "dhaka_target": 4, "completed": 0},
+        {"id": 4, "category": "MC 160", "brand": "Yamaha", "model": "MT-15", "dhaka_target": 2, "completed": 0},
+        {"id": 5, "category": "MC 160", "brand": "Yamaha", "model": "MT-15 V2", "dhaka_target": 2, "completed": 0},
+        {"id": 6, "category": "MC 160", "brand": "Yamaha", "model": "R-15", "dhaka_target": 2, "completed": 0},
+        {"id": 7, "category": "MC 160", "brand": "Yamaha", "model": "R-15 V4", "dhaka_target": 2, "completed": 0},
+        {"id": 8, "category": "MC 160", "brand": "Yamaha", "model": "R-15 M", "dhaka_target": 2, "completed": 0},
+        {"id": 9, "category": "MC 160", "brand": "Yamaha", "model": "FZS Fi V 4.0", "dhaka_target": 25, "completed": 0},
+        {"id": 10, "category": "MC 160", "brand": "Yamaha", "model": "FZ-X", "dhaka_target": 4, "completed": 0},
+        {"id": 11, "category": "MC 160", "brand": "Yamaha", "model": "FZS Fi Hybrid", "dhaka_target": 2, "completed": 0},
+        {"id": 12, "category": "ATSC", "brand": "Yamaha", "model": "Ray ZR", "dhaka_target": 1, "completed": 0},
+        {"id": 13, "category": "ATSC", "brand": "Yamaha", "model": "Ray ZR 125", "dhaka_target": 1, "completed": 0},
+        {"id": 14, "category": "ATSC", "brand": "Yamaha", "model": "AEROX 155cc", "dhaka_target": 3, "completed": 0},
+        {"id": 15, "category": "MC 125", "brand": "TVS", "model": "Raider", "dhaka_target": 2, "completed": 0},
+        {"id": 16, "category": "MC 160", "brand": "TVS", "model": "RTR 160 DD", "dhaka_target": 2, "completed": 0},
+        {"id": 17, "category": "MC 160", "brand": "TVS", "model": "RTR 4V (SD)", "dhaka_target": 2, "completed": 0},
+        {"id": 18, "category": "MC 160", "brand": "TVS", "model": "RTR 4V (DD)", "dhaka_target": 2, "completed": 0},
+        {"id": 19, "category": "MC161+", "brand": "Royal Enfield", "model": "Hunter 350", "dhaka_target": 2, "completed": 0},
+        {"id": 20, "category": "MC161+", "brand": "Royal Enfield", "model": "Bullet 350", "dhaka_target": 1, "completed": 0},
+        {"id": 21, "category": "MC161+", "brand": "Royal Enfield", "model": "Classic 350", "dhaka_target": 23, "completed": 0},
+        {"id": 22, "category": "MC161+", "brand": "Royal Enfield", "model": "Meteor 350", "dhaka_target": 2, "completed": 0},
+        {"id": 23, "category": "MC 100", "brand": "Suzuki", "model": "Hayate EP", "dhaka_target": 2, "completed": 0},
+        {"id": 24, "category": "MC 125", "brand": "Suzuki", "model": "GSX 125", "dhaka_target": 3, "completed": 0},
+        {"id": 25, "category": "MC 160", "brand": "Suzuki", "model": "Gixxer SD", "dhaka_target": 24, "completed": 0},
+        {"id": 26, "category": "MC 160", "brand": "Suzuki", "model": "Gixxer DD", "dhaka_target": 11, "completed": 0},
+        {"id": 27, "category": "MC 100", "brand": "Honda", "model": "Shine 100", "dhaka_target": 2, "completed": 0},
+        {"id": 28, "category": "MC 125", "brand": "Honda", "model": "SP 125", "dhaka_target": 12, "completed": 0},
+        {"id": 29, "category": "MC 160", "brand": "Honda", "model": "Xblade FI ABS", "dhaka_target": 25, "completed": 0},
+        {"id": 30, "category": "MC161+", "brand": "Honda", "model": "Hornet 2.0", "dhaka_target": 10, "completed": 0},
+        {"id": 31, "category": "MC 100", "brand": "Hero", "model": "HF Delux", "dhaka_target": 7, "completed": 0},
+        {"id": 32, "category": "MC 125", "brand": "Hero", "model": "Glamour", "dhaka_target": 5, "completed": 0},
+        {"id": 33, "category": "MC 125", "brand": "Hero", "model": "XTREME 125R", "dhaka_target": 10, "completed": 0},
+        {"id": 34, "category": "MC 125", "brand": "Bajaj", "model": "Discover125 Disc New", "dhaka_target": 15, "completed": 0},
+        {"id": 35, "category": "MC 160", "brand": "Bajaj", "model": "Pulsar 150 SD ABS", "dhaka_target": 18, "completed": 0}
     ];
 
-    let currentData = rawData.map((item, index) => ({
-        ...item, id: index, completed: 0
-    }));
-
+    let dbData = [...initialDataset];
     let activityLogs = JSON.parse(localStorage.getItem('arrowhead_survey_logs')) || [];
     let chartInstance = null;
 
-    // Load Data Live from Supabase
-    async function syncWithSupabase() {
-        const { data, error } = await _supabase.from('survey_data').select('*');
-        if (data) {
-            data.forEach(row => {
-                const found = currentData.find(d => d.id === row.id);
-                if (found) found.completed = row.completed;
-            });
-            render();
+    async function syncDatabaseData() {
+        const { data, error } = await _supabase.from('survey_data').select('*').order('id', { ascending: true });
+        if (data && data.length > 0) {
+            dbData = data;
+        } else {
+            await autoPopulateDatabase();
+        }
+        setupFilterOptions();
+        render();
+    }
+
+    async function autoPopulateDatabase() {
+        const { error } = await _supabase.from('survey_data').upsert(initialDataset);
+        if (!error) {
+            const { data } = await _supabase.from('survey_data').select('*').order('id', { ascending: true });
+            if (data) dbData = data;
         }
     }
 
-    function initFilters() {
-        const categories = [...new Set(rawData.map(d => d.category))];
-        const brands = [...new Set(rawData.map(d => d.brand))];
+    function setupFilterOptions() {
+        const categories = [...new Set(dbData.map(d => d.category))];
+        const brands = [...new Set(dbData.map(d => d.brand))];
 
         const catSelect = document.getElementById('filter-category');
+        catSelect.innerHTML = '<option value="ALL">সকল ক্যাটাগরি</option>';
         categories.forEach(cat => catSelect.add(new Option(cat, cat)));
 
         const brandSelect = document.getElementById('filter-brand');
+        brandSelect.innerHTML = '<option value="ALL">সকল ব্র্যান্ড</option>';
         brands.forEach(b => brandSelect.add(new Option(b, b)));
 
-        catSelect.addEventListener('change', render);
-        brandSelect.addEventListener('change', render);
+        catSelect.onchange = render;
+        brandSelect.onchange = render;
     }
 
     function showToast(message, bgColor='#0284c7') {
@@ -322,83 +318,52 @@
         toast.textContent = message;
         toast.style.background = bgColor;
         toast.style.display = 'block';
-        setTimeout(() => toast.style.display = 'none', 4000);
+        setTimeout(() => toast.style.display = 'none', 3500);
     }
 
-    async function countWork(id) {
-        const surveyor = document.getElementById('surveyor-name').value.trim() || 'Shuvo Biswas';
-        const item = currentData.find(d => d.id === id);
+    async function updateWork(id, change) {
+        const surveyor = document.getElementById('surveyor-name').value.trim() || 'Sahariya Islam Shuvo';
+        const item = dbData.find(d => d.id === id);
+        if (!item) return;
 
-        if (item && item.completed < item.dhaka_target) {
-            const updatedCount = item.completed + 1;
-            
-            // Save to Supabase DB
-            const { error } = await _supabase.from('survey_data').upsert({ id: id, completed: updatedCount });
+        const newCompleted = item.completed + change;
+        if (newCompleted < 0 || newCompleted > item.dhaka_target) return;
 
-            if (!error) {
-                item.completed = updatedCount;
-                const logEntry = {
-                    time: new Date().toLocaleTimeString('bn-BD', { hour: '2-digit', minute: '2-digit' }),
-                    surveyor: surveyor,
-                    category: item.category,
-                    brand: item.brand,
-                    model: item.model,
-                    status: 'জমা দেওয়া হয়েছে'
-                };
-                activityLogs.unshift(logEntry);
-                localStorage.setItem('arrowhead_survey_logs', JSON.stringify(activityLogs));
+        const { error } = await _supabase
+            .from('survey_data')
+            .upsert({ ...item, completed: newCompleted });
 
-                showToast(`✅ [${item.model}]-এ ১টি কাজ লাইভ জমা হয়েছে!`, '#10b981');
-                render();
-            } else {
-                showToast(`❌ ডাটা সেভ হতে সমস্যা হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।`, '#ef4444');
-            }
-        }
-    }
+        item.completed = newCompleted;
+        
+        const logEntry = {
+            time: new Date().toLocaleTimeString('bn-BD', { hour: '2-digit', minute: '2-digit' }),
+            surveyor: surveyor,
+            category: item.category,
+            brand: item.brand,
+            model: item.model,
+            status: change > 0 ? '✅ ১টি জমা দেওয়া হয়েছে' : '❌ ১টি বাতিল করা হয়েছে'
+        };
+        activityLogs.unshift(logEntry);
+        localStorage.setItem('arrowhead_survey_logs', JSON.stringify(activityLogs));
 
-    async function cancelWork(id) {
-        const surveyor = document.getElementById('surveyor-name').value.trim() || 'Shuvo Biswas';
-        const item = currentData.find(d => d.id === id);
-
-        if (item && item.completed > 0) {
-            const updatedCount = item.completed - 1;
-
-            // Update in Supabase DB
-            const { error } = await _supabase.from('survey_data').upsert({ id: id, completed: updatedCount });
-
-            if (!error) {
-                item.completed = updatedCount;
-                const logEntry = {
-                    time: new Date().toLocaleTimeString('bn-BD', { hour: '2-digit', minute: '2-digit' }),
-                    surveyor: surveyor,
-                    category: item.category,
-                    brand: item.brand,
-                    model: item.model,
-                    status: '❌ বাতিল করা হয়েছে'
-                };
-                activityLogs.unshift(logEntry);
-                localStorage.setItem('arrowhead_survey_logs', JSON.stringify(activityLogs));
-
-                showToast(`⚠️ [${item.model}] থেকে ১টি জমা বাতিল করা হয়েছে!`, '#ef4444');
-                render();
-            }
-        }
+        showToast(change > 0 ? `✅ [${item.model}] ১টি নতুন কাজ জমা হয়েছে!` : `⚠️ [${item.model}] ১টি জমা বাতিল করা হয়েছে!`, change > 0 ? '#10b981' : '#ef4444');
+        render();
     }
 
     function getFilteredData() {
         const catVal = document.getElementById('filter-category').value;
         const brandVal = document.getElementById('filter-brand').value;
 
-        return currentData.filter(d => {
+        return dbData.filter(d => {
             const matchesCat = (catVal === 'ALL' || d.category === catVal);
             const matchesBrand = (brandVal === 'ALL' || d.brand === brandVal);
             return matchesCat && matchesBrand;
         });
     }
 
-    function updateStats(filteredData) {
-        const totalTarget = filteredData.reduce((acc, d) => acc + d.dhaka_target, 0);
-        const totalCompleted = filteredData.reduce((acc, d) => acc + d.completed, 0);
+    function renderStats(filtered) {
+        const totalTarget = filtered.reduce((acc, d) => acc + (d.dhaka_target || 0), 0);
+        const totalCompleted = filtered.reduce((acc, d) => acc + (d.completed || 0), 0);
         const totalRemaining = Math.max(0, totalTarget - totalCompleted);
         const pct = totalTarget > 0 ? Math.round((totalCompleted / totalTarget) * 100) : 0;
 
@@ -408,30 +373,25 @@
         document.getElementById('stat-progress').textContent = pct + '%';
     }
 
-    function renderTable(filteredData) {
+    function renderTable(filtered) {
         const tbody = document.getElementById('table-body');
         tbody.innerHTML = '';
 
-        if(filteredData.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:#94a3b8; padding:20px;">কোনো ডেটা পাওয়া যায়নি!</td></tr>`;
-            return;
-        }
-
-        filteredData.forEach(item => {
+        filtered.forEach(item => {
             const remaining = Math.max(0, item.dhaka_target - item.completed);
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td><span class="badge badge-category">${item.category}</span></td>
                 <td><span class="badge badge-brand">${item.brand}</span></td>
                 <td><strong>${item.model}</strong></td>
-                <td>${item.dhaka_target}</td>
+                <td><strong style="color:#38bdf8">${item.dhaka_target}</strong></td>
                 <td style="color: #10b981; font-weight:700;">${item.completed}</td>
                 <td style="color: #f59e0b; font-weight:700;">${remaining}</td>
                 <td>
-                    <button class="action-btn" onclick="countWork(${item.id})" ${item.completed >= item.dhaka_target ? 'disabled' : ''}>
-                        +১ কাজ জমা
+                    <button class="action-btn" onclick="updateWork(${item.id}, 1)" ${item.completed >= item.dhaka_target ? 'disabled' : ''}>
+                        +১ জমা
                     </button>
-                    <button class="cancel-btn" onclick="cancelWork(${item.id})" ${item.completed <= 0 ? 'disabled' : ''}>
+                    <button class="cancel-btn" onclick="updateWork(${item.id}, -1)" ${item.completed <= 0 ? 'disabled' : ''}>
                         ❌ বাতিল
                     </button>
                 </td>
@@ -452,49 +412,44 @@
                 <td><span class="badge badge-category">${log.category}</span></td>
                 <td><span class="badge badge-brand">${log.brand}</span></td>
                 <td>${log.model}</td>
-                <td style="color: ${isCancelled ? '#f87171' : '#34d399'}; font-weight: 600;">${log.status || 'জমা'}</td>
+                <td style="color: ${isCancelled ? '#f87171' : '#34d399'}; font-weight: 600;">${log.status}</td>
             `;
             logBody.appendChild(tr);
         });
     }
 
-    function renderChart(filteredData) {
+    function renderChart(filtered) {
         const ctx = document.getElementById('mainChart').getContext('2d');
-        const labels = filteredData.map(d => d.model);
-        const completedData = filteredData.map(d => d.completed);
-        const remainingData = filteredData.map(d => Math.max(0, d.dhaka_target - d.completed));
-
         if (chartInstance) chartInstance.destroy();
 
         chartInstance = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: labels,
+                labels: filtered.map(d => d.model),
                 datasets: [
-                    { label: 'সম্পন্ন কাজ', data: completedData, backgroundColor: '#10b981', borderRadius: 6 },
-                    { label: 'বাকি কাজ', data: remainingData, backgroundColor: '#334155', borderRadius: 6 }
+                    { label: 'সম্পন্ন', data: filtered.map(d => d.completed), backgroundColor: '#10b981', borderRadius: 6 },
+                    { label: 'বাকি টার্গেট', data: filtered.map(d => Math.max(0, d.dhaka_target - d.completed)), backgroundColor: '#334155', borderRadius: 6 }
                 ]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                plugins: { legend: { labels: { color: '#f8fafc', font: { size: 14 } } } },
                 scales: {
-                    x: { stacked: true, ticks: { color: '#94a3b8', font: { size: 12 } }, grid: { display: false } },
-                    y: { stacked: true, beginAtZero: true, ticks: { color: '#94a3b8' }, grid: { color: '#334155' } }
+                    x: { stacked: true, ticks: { color: '#94a3b8' } },
+                    y: { stacked: true, beginAtZero: true, ticks: { color: '#94a3b8' } }
                 }
             }
         });
     }
 
     function exportToCSV() {
-        if(activityLogs.length === 0) {
+        if (activityLogs.length === 0) {
             alert('এখনো কোনো কাজ রেকর্ড হয়নি!');
             return;
         }
         let csv = 'Time,Operator,Category,Brand,Model,Status\n';
         activityLogs.forEach(log => {
-            csv += `"${log.time}","${log.surveyor}","${log.category}","${log.brand}","${log.model}","${log.status || 'Submitted'}"\n`;
+            csv += `"${log.time}","${log.surveyor}","${log.category}","${log.brand}","${log.model}","${log.status}"\n`;
         });
 
         const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
@@ -505,23 +460,22 @@
     }
 
     function render() {
-        const filteredData = getFilteredData();
-        updateStats(filteredData);
-        renderTable(filteredData);
+        const filtered = getFilteredData();
+        renderStats(filtered);
+        renderTable(filtered);
         renderLogs();
-        renderChart(filteredData);
+        renderChart(filtered);
     }
 
-    // Real-time listener for multi-device sync
+    // Realtime Listener
     _supabase
         .channel('public:survey_data')
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'survey_data' }, payload => {
-            syncWithSupabase();
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'survey_data' }, () => {
+            syncDatabaseData();
         })
         .subscribe();
 
-    initFilters();
-    syncWithSupabase();
+    syncDatabaseData();
 </script>
 </body>
 </html>
