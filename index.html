@@ -76,12 +76,14 @@
             border: 1px solid var(--card-border); margin-bottom: 28px; display: flex;
             gap: 20px; flex-wrap: wrap; align-items: center;
         }
-        .filter-group { display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 200px; }
+        .filter-group { display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 220px; }
         .filter-group label { font-size: 13px; color: var(--text-muted); font-weight: 600; }
+        
         select {
             padding: 10px 16px; border-radius: 10px; border: 1px solid var(--card-border);
-            background: #0f172a; color: #fff; font-size: 14px; outline: none; cursor: pointer;
+            background: #0f172a; color: #fff; font-size: 14px; outline: none; width: 100%;
         }
+        select:focus { border-color: #38bdf8; }
 
         /* Large Chart Section */
         .chart-card {
@@ -181,14 +183,14 @@
         </div>
     </div>
 
-    <!-- Dynamic Category/Brand Filters -->
+    <!-- Category & Brand Filters Only -->
     <div class="controls-card">
         <div class="filter-group">
-            <label>CC Category ফিল্টার</label>
+            <label>📂 Category ফিল্টার</label>
             <select id="filter-category"><option value="ALL">সকল ক্যাটাগরি</option></select>
         </div>
         <div class="filter-group">
-            <label>Brand ফিল্টার</label>
+            <label>🏷️ Brand ফিল্টার</label>
             <select id="filter-brand"><option value="ALL">সকল ব্র্যান্ড</option></select>
         </div>
     </div>
@@ -201,7 +203,7 @@
         </div>
     </div>
 
-    <!-- Main Data Table with Rollback/Cancel option -->
+    <!-- Main Data Table -->
     <div class="table-card">
         <h2>📋 মডেল ভিত্তিক সার্ভে ডাটা কন্ট্রোল প্যানেল</h2><br>
         <div class="table-wrapper">
@@ -317,7 +319,6 @@
         setTimeout(() => toast.style.display = 'none', 4000);
     }
 
-    // Submit Work
     function countWork(id) {
         const surveyor = document.getElementById('surveyor-name').value.trim() || 'Shuvo Biswas';
         const item = currentData.find(d => d.id === id);
@@ -348,7 +349,6 @@
         }
     }
 
-    // Cancel / Rollback Work (বাতিল অপশন)
     function cancelWork(id) {
         const surveyor = document.getElementById('surveyor-name').value.trim() || 'Shuvo Biswas';
         const item = currentData.find(d => d.id === id);
@@ -383,10 +383,11 @@
         const catVal = document.getElementById('filter-category').value;
         const brandVal = document.getElementById('filter-brand').value;
 
-        return currentData.filter(d => 
-            (catVal === 'ALL' || d.category === catVal) &&
-            (brandVal === 'ALL' || d.brand === brandVal)
-        );
+        return currentData.filter(d => {
+            const matchesCat = (catVal === 'ALL' || d.category === catVal);
+            const matchesBrand = (brandVal === 'ALL' || d.brand === brandVal);
+            return matchesCat && matchesBrand;
+        });
     }
 
     function updateStats(filteredData) {
@@ -404,6 +405,11 @@
     function renderTable(filteredData) {
         const tbody = document.getElementById('table-body');
         tbody.innerHTML = '';
+
+        if(filteredData.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:#94a3b8; padding:20px;">কোনো ডেটা পাওয়া যায়নি!</td></tr>`;
+            return;
+        }
 
         filteredData.forEach(item => {
             const remaining = Math.max(0, item.dhaka_target - item.completed);
@@ -446,7 +452,6 @@
         });
     }
 
-    // Large Chart Rendering
     function renderChart(filteredData) {
         const ctx = document.getElementById('mainChart').getContext('2d');
         const labels = filteredData.map(d => d.model);
